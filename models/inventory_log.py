@@ -6,6 +6,7 @@ class InventoryLog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.id'))
+    batch_id = db.Column(db.Integer, db.ForeignKey('medicine_batches.id'))
     change_type = db.Column(db.Enum('import', 'dispense'))
     quantity = db.Column(db.Integer)
     performed_by = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -13,4 +14,5 @@ class InventoryLog(db.Model):
     note = db.Column(db.Text)
 
     medicine = db.relationship('Medicine')
+    batch = db.relationship('MedicineBatch')
     user = db.relationship('User')

@@ -1,5 +1,7 @@
 from app import db
-
-# Import các models để đảm bảo SQLAlchemy nhận biết chúng
-from models.role import Role
 from models.user import User
+from models.patient import Patient
+from models.medicine import Medicine
+from models.prescription import Prescription
+from models.prescription_item import PrescriptionItem
+from models.inventory_log import InventoryLog

@@ -2,6 +2,7 @@ from flask import render_template
 from app import app, db
 from sqlalchemy import text
 
+
 @app.route("/")
 def home():
     try:

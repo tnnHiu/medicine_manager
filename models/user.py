@@ -1,9 +1,20 @@
 from app import db
+from sqlalchemy import Enum
+import enum
+
+
+class RoleEnum(enum.Enum):
+    admin = "admin"
+    doctor = "doctor"
+    pharmacist = "pharmacist"
+
 
 class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    full_name = db.Column(db.String(100))
+    role = db.Column(Enum(RoleEnum), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())

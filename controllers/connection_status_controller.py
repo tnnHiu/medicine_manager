@@ -2,7 +2,6 @@ from flask import render_template
 from app import app, db
 from sqlalchemy import text
 
-
 @app.route("/")
 def home():
     try:
@@ -20,6 +19,7 @@ def home():
             'message': 'Không thể kết nối đến cơ sở dữ liệu!',
             'details': str(e)
         }
+        db.session.rollback()
     finally:
         db.session.close()
 

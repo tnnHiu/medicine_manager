@@ -1,75 +1,18 @@
-# Quan hệ giữa các bảng trong hệ thống quản lý thuốc
+## 🔗 Bảng Quan Hệ Giữa Các Bảng
 
-| Quan hệ                              | Kiểu | Diễn giải                                                  |
-| ------------------------------------ | ---- | ---------------------------------------------------------- |
-| `User` → `Prescription`              | 1:N  | Một bác sĩ có thể kê nhiều đơn thuốc                       |
-| `User` → `InventoryLog`              | 1:N  | Một người dùng thực hiện nhiều thay đổi kho thuốc          |
-| `Patient` → `Prescription`           | 1:N  | Một bệnh nhân có thể có nhiều đơn thuốc                    |
-| `Medicine` → `PrescriptionItem`      | 1:N  | Một loại thuốc có thể xuất hiện nhiều lần trong đơn thuốc  |
-| `Medicine` → `InventoryLog`          | 1:N  | Một thuốc có thể có nhiều lịch sử thay đổi kho             |
-| `Prescription` → `PrescriptionItem`  | 1:N  | Một đơn thuốc có nhiều dòng kê thuốc cụ thể                |
+| Bảng chính         | Bảng liên quan         | Kiểu quan hệ        | Khóa chính             | Khóa ngoại                          | Mô tả                                                         |
+|--------------------|------------------------|---------------------|-------------------------|--------------------------------------|---------------------------------------------------------------|
+| `medicines`        | `medicine_batch_items` | 1 — N (one-to-many) | `medicines.id`          | `medicine_batch_items.medicine_id`  | Một loại thuốc có thể xuất hiện trong nhiều lô thuốc           |
+| `medicine_batches` | `medicine_batch_items` | 1 — N (one-to-many) | `medicine_batches.id`   | `medicine_batch_items.batch_id`     | Một lô thuốc có thể chứa nhiều loại thuốc                      |
+| `medicines`        | `inventory_logs`       | 1 — N (one-to-many) | `medicines.id`          | `inventory_logs.medicine_id`        | Lưu lịch sử nhập/xuất thuốc                                   |
+| `medicine_batches` | `inventory_logs`       | 1 — N (one-to-many) | `medicine_batches.id`   | `inventory_logs.batch_id`           |                                                               |
+| `users`            | `inventory_logs`       | 1 — N (one-to-many) | `users.id`              | `inventory_logs.performed_by`       | Ai thực hiện hành động nhập/xuất                              |
+| `patients`         | `prescriptions`        | 1 — N (one-to-many) | `patients.id`           | `prescriptions.patient_id`          | Một bệnh nhân có nhiều đơn thuốc                              |
+| `users`            | `prescriptions`        | 1 — N (one-to-many) | `users.id`              | `prescriptions.doctor_id`           | Bác sĩ kê đơn                                                 |
+| `prescriptions`    | `prescription_items`   | 1 — N (one-to-many) | `prescriptions.id`      | `prescription_items.prescription_id`| Một đơn thuốc gồm nhiều dòng thuốc                            |
+| `medicines`        | `prescription_items`   | 1 — N (one-to-many) | `medicines.id`          | `prescription_items.medicine_id`    | Mỗi dòng đơn thuốc chứa một loại thuốc                        |
+| `medicine_batches` | `prescription_items`   | 1 — N (one-to-many) | `medicine_batches.id`   | `prescription_items.batch_id`       | Mỗi dòng đơn thuốc ghi rõ thuốc lấy từ lô nào                 |
 
-## 🔹 1. User (Bác sĩ, Quản trị, Dược sĩ)
-
-**Quan hệ 1-N với `prescriptions`:**
-
-- Một bác sĩ (`users.role = 'doctor'`) có thể kê nhiều đơn thuốc.  
-- Mỗi đơn thuốc chỉ thuộc về một bác sĩ.  
-→ `prescriptions.doctor_id → users.id`
-
-**Quan hệ 1-N với `inventory_logs`:**
-
-- Một dược sĩ/quản trị viên có thể ghi nhiều lịch sử kho thuốc.  
-→ `inventory_logs.performed_by → users.id`
-
----
-
-## 🔹 2. Patient (Bệnh nhân)
-
-**Quan hệ 1-N với `prescriptions`:**
-
-- Một bệnh nhân có thể có nhiều đơn thuốc.  
-- Mỗi đơn thuốc chỉ gắn với một bệnh nhân.  
-→ `prescriptions.patient_id → patients.id`
-
----
-
-## 🔹 3. Medicine (Thuốc)
-
-**Quan hệ 1-N với `prescription_items`:**
-
-- Một loại thuốc có thể xuất hiện trong nhiều dòng đơn thuốc.  
-- Mỗi dòng kê thuốc chỉ tham chiếu đến 1 loại thuốc.  
-→ `prescription_items.medicine_id → medicines.id`
-
-**Quan hệ 1-N với `inventory_logs`:**
-
-- Mỗi loại thuốc có thể có nhiều lần thay đổi kho (nhập, cấp phát…).  
-→ `inventory_logs.medicine_id → medicines.id`
-
----
-
-## 🔹 4. Prescription (Đơn thuốc)
-
-**Quan hệ N-1 với `users` và `patients`:**
-
-- Mỗi đơn thuốc gắn với 1 bệnh nhân và 1 bác sĩ.
-
-**Quan hệ 1-N với `prescription_items`:**
-
-- Một đơn thuốc có nhiều dòng kê thuốc.  
-→ `prescription_items.prescription_id → prescriptions.id`
-
----
-
-## 🔹 5. PrescriptionItem (Chi tiết đơn thuốc)
-
-- **N-1 với `prescriptions`**: thuộc về một đơn thuốc.  
-- **N-1 với `medicines`**: kê 1 loại thuốc.
-
----
-
-## 🔹 6. InventoryLog (Nhật ký kho thuốc)
-
-- **N-1 với `medicines`**: thay đổi kho của 1 loại thuốc.  
-- **N-1 với `users`**: do một người dùng thực hiện (thường là dược sĩ hoặc quản trị viên).
+### 💡 Ghi chú:
+- `medicine_batch_items` là bảng trung gian giữa `medicines` và `medicine_batches` → quan hệ nhiều-nhiều.
+- Các bảng `*_items`, `*_logs`, `*_batches` đều có khóa ngoại với `ondelete='CASCADE'` để hỗ trợ xóa dữ liệu liên quan khi cần.

@@ -1,323 +1,119 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - Hệ thống Quản lý Thuốc</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #f0f7ff, #d6eaff);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+{% extends "base.html" %}
 
-        /* Navbar Styles */
-        .navbar {
-            background: linear-gradient(90deg, #1e88e5, #1565c0);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+{% block title %}Trang chủ - Hệ thống Quản lý Thuốc{% endblock %}
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            color: white !important;
-        }
+{% block extra_css %}
+    /* Card Styles */
+    .dashboard-card {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    background: white;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+    }
 
-        .navbar-brand i {
-            margin-right: 0.6rem;
-            font-size: 1.8rem;
-            animation: pulse 2s infinite;
-        }
+    .dashboard-card:hover {
+    transform: translateY(-5px);
+    }
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
+    .card-header {
+    background: linear-gradient(90deg, #1e88e5, #1565c0);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    }
 
-        .nav-link {
-            color: white !important;
-            font-weight: 500;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+    .card-header i {
+    margin-right: 0.5rem;
+    }
 
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
+    .card-body {
+    padding: 2rem;
+    }
 
-        .nav-link .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.7rem;
-        }
+    /* Widget Styles */
+    .widget {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    text-align: center;
+    }
 
-        .navbar-text {
-            color: white;
-            font-weight: 500;
-        }
+    .widget:hover {
+    transform: translateY(-5px);
+    }
 
-        .btn-light {
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
-        }
+    .widget i {
+    font-size: 2.5rem;
+    color: #1e88e5;
+    margin-bottom: 0.8rem;
+    transition: transform 0.3s ease;
+    }
 
-        .btn-light:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
+    .widget:hover i {
+    transform: scale(1.2);
+    }
 
-        /* Search Bar */
-        .search-bar {
-            max-width: 300px;
-            margin-right: 1rem;
-        }
+    .widget h6 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    }
 
-        .search-bar .form-control {
-            border-radius: 20px;
-            border: none;
-            padding: 0.5rem 1rem;
-        }
+    .widget p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e88e5;
+    }
 
-        /* Container Styles */
-        .container {
-            margin-top: 2rem;
-            animation: fadeIn 0.6s ease-in-out;
-        }
+    /* Table Styles */
+    .table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .table thead {
+    background: #1e88e5;
+    color: white;
+    }
 
-        /* Card Styles */
-        .dashboard-card {
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            background: white;
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
-        }
+    .table tbody tr {
+    transition: background 0.2s ease;
+    }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-        }
+    .table tbody tr:hover {
+    background: #f0f7ff;
+    }
 
-        .card-header {
-            background: linear-gradient(90deg, #1e88e5, #1565c0);
-            color: white;
-            border-radius: 15px 15px 0 0;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
+    /* Action Buttons */
+    .btn-action {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    }
 
-        .card-header i {
-            margin-right: 0.5rem;
-        }
+    .btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
-        .card-body {
-            padding: 2rem;
-        }
+    /* Chart Styles */
+    .chart-container {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+{% endblock %}
 
-        /* Widget Styles */
-        .widget {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            text-align: center;
-        }
-
-        .widget:hover {
-            transform: translateY(-5px);
-        }
-
-        .widget i {
-            font-size: 2.5rem;
-            color: #1e88e5;
-            margin-bottom: 0.8rem;
-            transition: transform 0.3s ease;
-        }
-
-        .widget:hover i {
-            transform: scale(1.2);
-        }
-
-        .widget h6 {
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .widget p {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1e88e5;
-        }
-
-        /* Table Styles */
-        .table {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .table thead {
-            background: #1e88e5;
-            color: white;
-        }
-
-        .table tbody tr {
-            transition: background 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background: #f0f7ff;
-        }
-
-        /* Action Buttons */
-        .btn-action {
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Chart Styles */
-        .chart-container {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.8rem 1rem;
-            }
-
-            .container {
-                margin: 1rem;
-            }
-
-            .widget {
-                margin-bottom: 1rem;
-            }
-
-            .search-bar {
-                max-width: 100%;
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="#"><i class="fas fa-capsules"></i> Quản lý Thuốc</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('dashboard') }}">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Quản lý Bệnh nhân <span class="badge bg-danger">3</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('medicines') }}">Quản lý Thuốc</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Cấp phát Thuốc <span
-                            class="badge bg-warning">5</span></a>
-                </li>
-            </ul>
-            <form class="search-bar d-flex me-3">
-                <input class="form-control" type="search" placeholder="Tìm kiếm bệnh nhân, thuốc..."
-                       aria-label="Search">
-            </form>
-            <div class="d-flex align-items-center">
-                <span class="navbar-text me-3">
-                    Xin chào, {{ session.get('full_name') }}!
-                </span>
-                <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card dashboard-card">
-                <div class="card-header">
-                    <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
-                </div>
-                <div class="card-body">
-                    <h5>Chào mừng đến với Hệ thống Quản lý Thuốc</h5>
-                    <p>Bạn đã đăng nhập với vai trò: <strong>{{ session.get('role') }}</strong></p>
-                    <button class="btn btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#addPatientModal">
-                        <i class="fas fa-plus me-2"></i> Thêm Bệnh nhân
-                    </button>
-                    <button class="btn btn-success btn-action" data-bs-toggle="modal"
-                            data-bs-target="#addPrescriptionModal">
-                        <i class="fas fa-file-prescription me-2"></i> Cấp phát Thuốc
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+{% block content %}
     <!-- Widget Section -->
     <div class="row mb-4">
         <div class="col-md-4">
@@ -460,51 +256,50 @@
             </div>
         </div>
     </div>
-</div>
+{% endblock %}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Chart.js for Prescription Chart
-    const ctx1 = document.getElementById('prescriptionChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6'],
-            datasets: [{
-                label: 'Đơn thuốc',
-                data: [12, 19, 3, 5, 2],
-                backgroundColor: 'rgba(30, 136, 229, 0.6)',
-                borderColor: 'rgba(30, 136, 229, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+{% block scripts %}
+    <script>
+        // Chart.js for Prescription Chart
+        const ctx1 = document.getElementById('prescriptionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6'],
+                datasets: [{
+                    label: 'Đơn thuốc',
+                    data: [12, 19, 3, 5, 2],
+                    backgroundColor: 'rgba(30, 136, 229, 0.6)',
+                    borderColor: 'rgba(30, 136, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
+        });
 
-    // Chart.js for Medicine Chart
-    const ctx2 = document.getElementById('medicineChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-            labels: ['Paracetamol', 'Amoxicillin', 'Ibuprofen', 'Others'],
-            datasets: [{
-                label: 'Thuốc trong kho',
-                data: [120, 80, 60, 40],
-                backgroundColor: [
-                    'rgba(30, 136, 229, 0.6)',
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(75, 192, 192, 0.6)'
-                ]
-            }]
-        }
-    });
-</script>
-</body>
-</html>
+        // Chart.js for Medicine Chart
+        const ctx2 = document.getElementById('medicineChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Paracetamol', 'Amoxicillin', 'Ibuprofen', 'Others'],
+                datasets: [{
+                    label: 'Thuốc trong kho',
+                    data: [120, 80, 60, 40],
+                    backgroundColor: [
+                        'rgba(30, 136, 229, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
+                    ]
+                }]
+            }
+        });
+    </script>
+{% endblock %}

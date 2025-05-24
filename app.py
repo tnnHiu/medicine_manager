@@ -1,18 +1,19 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash
+from extensions import db
+from flask_migrate import Migrate
+from models import *
+from controllers import register_all_routes
 
 app = Flask(__name__)
 app.config.from_object('config')
-db = SQLAlchemy(app)
 
-# Import sau khi tạo app và db
-from models import *
-from controllers import *
+db.init_app(app)
+# migrate = Migrate(app, db)
 
 with app.app_context():
     db.create_all()
-    # create_admin_if_not_exists()
+
+register_all_routes(app)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

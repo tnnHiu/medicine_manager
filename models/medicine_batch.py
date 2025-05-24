@@ -1,5 +1,4 @@
-from app import db
-
+from extensions import db
 
 # Thông tin lô thuốc
 class MedicineBatch(db.Model):

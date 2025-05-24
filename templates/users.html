@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý người dùng{% endblock %}
+
+{% block extra_css %}
+    .search-bar {
+    max-width: 350px;
+    }
+
+    .search-bar .form-control {
+    border-radius: 20px 0 0 20px;
+    border: 1px solid var(--primary);
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .search-bar .form-control:focus {
+    box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+    border-color: var(--secondary);
+    }
+
+    .search-bar .btn-search {
+    border-radius: 0 20px 20px 0;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border: none;
+    font-size: 1.2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .search-bar .btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    }
+
+    .btn-add-user {
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border: none;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-add-user:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    }
+
+    .btn-add-user i {
+    font-size: 1.2rem;
+    }
+
+    .card {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    background: #fff;
+    margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border-radius: 10px 10px 0 0;
+    padding: 1rem;
+    }
+
+    .table {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    }
+
+    .table thead {
+    background: var(--primary);
+    color: var(--text-light);
+    }
+
+    .table tbody tr {
+    transition: background 0.2s;
+    }
+
+    .table tbody tr:hover {
+    background: #f5faff;
+    }
+
+    .btn-action {
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    }
+
+    .modal-content {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+    background: var(--primary);
+    color: var(--text-light);
+    border-radius: 10px 10px 0 0;
+    }
+
+    .modal-body {
+    padding: 1.5rem;
+    }
+
+    .chart-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+    .search-bar {
+    max-width: 100%;
+    margin-top: 0.5rem;
+    }
+
+    .table-responsive {
+    font-size: 0.85rem;
+    }
+
+    .btn-action, .btn-add-user {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    }
+
+    .btn-add-user i, .btn-search i {
+    font-size: 1rem;
+    }
+    }
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-users me-2"></i>Danh sách người dùng</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Danh sách người dùng
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-add-user" data-bs-toggle="modal"
+                            data-bs-target="#addUserModal">
+                        <i class="fas fa-plus me-2"></i>Thêm người dùng mới
+                    </button>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm..."
+                               aria-label="Search" id="searchInput">
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add User Modal -->
+            <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addUserModalLabel">Thêm Người Dùng Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('add_user') }}" method="POST">
+                                <div class="mb-3">
+                                    <label for="addUsername" class="form-label">Tên tài khoản</label>
+                                    <input type="text" class="form-control" id="addUsername" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addPassword" class="form-label">Mật khẩu</label>
+                                    <input type="password" class="form-control" id="addPassword" name="password"
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addFullName" class="form-label">Họ và tên</label>
+                                    <input type="text" class="form-control" id="addFullName" name="full_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addRole" class="form-label">Vai trò</label>
+                                    <select class="form-control" id="addRole" name="role" required>
+                                        <option value="admin">Quản trị viên</option>
+                                        <option value="doctor">Bác sĩ</option>
+                                        <option value="pharmacist">Dược sĩ</option>
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="userTable">
+                    <thead>
+                    <tr>
+                        <th>Tên tài khoản</th>
+                        <th>Tên người dùng</th>
+                        <th>Vai trò</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if users %}
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.full_name or '' }}</td>
+                                <td>{{ user.role.value }}</td>
+                                <td>
+                                    {% if user.created_at %}
+                                        {{ user.created_at.date() }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if session.get('role') in ['admin'] %}
+                                        <button type="button" class="btn btn-sm btn-warning btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal{{ user.id }}">
+                                            Sửa
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger btn-action"
+                                                data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}">
+                                            Xóa
+                                        </button>
+                                        <!-- Edit User Modal -->
+                                        <div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1"
+                                             aria-labelledby="editUserModalLabel{{ user.id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editUserModalLabel{{ user.id }}">Sửa
+                                                            Thông Tin Người Dùng</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ url_for('edit_user', user_id=user.id) }}"
+                                                              method="POST">
+                                                            <div class="mb-3">
+                                                                <label for="editUsername{{ user.id }}"
+                                                                       class="form-label">Tên tài khoản</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="editUsername{{ user.id }}"
+                                                                       name="username" value="{{ user.username }}"
+                                                                       required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editPassword{{ user.id }}"
+                                                                       class="form-label">Mật khẩu (để trống nếu không
+                                                                    đổi)</label>
+                                                                <input type="password" class="form-control"
+                                                                       id="editPassword{{ user.id }}"
+                                                                       name="password">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editFullName{{ user.id }}"
+                                                                       class="form-label">Họ và tên</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="editFullName{{ user.id }}"
+                                                                       name="full_name"
+                                                                       value="{{ user.full_name or '' }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editRole{{ user.id }}" class="form-label">Vai
+                                                                    trò</label>
+                                                                <select class="form-control" id="editRole{{ user.id }}"
+                                                                        name="role" required>
+                                                                    <option value="admin"
+                                                                            {% if user.role.value == 'admin' %}selected{% endif %}>
+                                                                        Quản trị viên
+                                                                    </option>
+                                                                    <option value="doctor"
+                                                                            {% if user.role.value == 'doctor' %}selected{% endif %}>
+                                                                        Bác sĩ
+                                                                    </option>
+                                                                    <option value="pharmacist"
+                                                                            {% if user.role.value == 'pharmacist' %}selected{% endif %}>
+                                                                        Dược sĩ
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Hủy
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Delete User Modal -->
+                                        <div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1"
+                                             aria-labelledby="deleteUserModalLabel{{ user.id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteUserModalLabel{{ user.id }}">
+                                                            Xác nhận xóa</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn muốn xóa người dùng
+                                                        <strong>{{ user.username }}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Hủy
+                                                        </button>
+                                                        <form action="{{ url_for('delete_user', user_id=user.id) }}"
+                                                              method="POST">
+                                                            <button type="submit" class="btn btn-danger">Xóa</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Không có dữ liệu</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('userTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let row of rows) {
+                const username = row.cells[0].textContent.toLowerCase();
+                const fullName = row.cells[1].textContent.toLowerCase();
+                if (username.includes(searchValue) || fullName.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    </script>
+{% endblock %}

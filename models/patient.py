@@ -1,4 +1,4 @@
-from app import db
+from extensions import db
 
 from sqlalchemy import Enum
 import enum
@@ -14,6 +14,7 @@ class Patient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(100))
+    id_card = db.Column(db.String(12), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date)
     gender = db.Column(db.Enum(GenderEnum))
     phone = db.Column(db.String(20))

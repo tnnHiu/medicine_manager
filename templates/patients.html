@@ -1,0 +1,418 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý người lấy thuốc{% endblock %}
+
+{% block extra_css %}
+    .search-bar {
+    max-width: 350px;
+    }
+
+    .search-bar .form-control {
+    border-radius: 20px 0 0 20px;
+    border: 1px solid var(--primary);
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .search-bar .form-control:focus {
+    box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+    border-color: var(--secondary);
+    }
+
+    .search-bar ..btn-search {
+    border-radius: 0 20px 20px 0;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border: none;
+    font-size: 1.2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .search-bar .btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    }
+
+    .btn-add-patient {
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border: none;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-add-patient:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    }
+
+    .btn-add-patient i {
+    font-size: 1.2rem;
+    }
+
+    .card {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    background: #fff;
+    margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: var(--text-light);
+    border-radius: 10px 10px 0 0;
+    padding: 1rem;
+    }
+
+    .table {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    }
+
+    .table thead {
+    background: var(--primary);
+    color: var(--text-light);
+    }
+
+    .table tbody tr {
+    transition: background 0.2s;
+    }
+
+    .table tbody tr:hover {
+    background: #f5faff;
+    }
+
+    .btn-action {
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    }
+
+    .modal-content {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+    background: var(--primary);
+    color: var(--text-light);
+    border-radius: 10px 10px 0 0;
+    }
+
+    .modal-body {
+    padding: 1.5rem;
+    }
+
+    .chart-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+    .search-bar {
+    max-width: 100%;
+    margin-top: 0.5rem;
+    }
+
+    .table-responsive {
+    font-size: 0.85rem;
+    }
+
+    .btn-action, .btn-add-patient {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    }
+
+    .btn-add-patient i, .btn-search i {
+    font-size: 1rem;
+    }
+    }
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-users me-2"></i>Danh sách người lấy thuốc</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Danh sách người lấy thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    {% if session.get('role') in ['admin', 'pharmacist'] %}
+                        <button type="button" class="btn btn-add-patient" data-bs-toggle="modal"
+                                data-bs-target="#addPatientModal">
+                            <i class="fas fa-plus me-2"></i>Thêm người lấy thuốc mới
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm..."
+                               aria-label="Search" id="searchInput">
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Patient Modal -->
+            <div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPatientModalLabel">Thêm Người Lấy Thuốc Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('add_patient') }}" method="POST">
+                                <div class="mb-3">
+                                    <label for="addFullName" class="form-label">Họ và tên</label>
+                                    <input type="text" class="form-control" id="addFullName" name="full_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addIdCard" class="form-label">Số căn cước</label>
+                                    <input type="text" class="form-control" id="addIdCard" name="id_card" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addDateOfBirth" class="form-label">Ngày sinh</label>
+                                    <input type="date" class="form-control" id="addDateOfBirth" name="date_of_birth">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addGender" class="form-label">Giới tính</label>
+                                    <select class="form-control" id="addGender" name="gender">
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="M">Nam</option>
+                                        <option value="F">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addPhone" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" id="addPhone" name="phone">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addAddress" class="form-label">Địa chỉ</label>
+                                    <textarea class="form-control" id="addAddress" name="address" rows="4"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="patientTable">
+                    <thead>
+                    <tr>
+                        <th>Tên người lấy</th>
+                        <th>Số căn cước</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày nhập</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if patients %}
+                        {% for patient in patients %}
+                            <tr>
+                                <td>{{ patient.full_name or '' }}</td>
+                                <td>{{ patient.id_card }}</td>
+                                <td>{{ patient.phone or '' }}</td>
+                                <td>
+                                    {% if patient.created_at %}
+                                        {{ patient.created_at.date() }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if session.get('role') in ['admin', 'pharmacist'] %}
+                                        <button type="button" class="btn btn-sm btn-warning btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editPatientModal{{ patient.id }}">
+                                            Sửa
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deletePatientModal{{ patient.id }}">
+                                            Xóa
+                                        </button>
+                                        <!-- Edit Patient Modal -->
+                                        <div class="modal fade" id="editPatientModal{{ patient.id }}" tabindex="-1"
+                                             aria-labelledby="editPatientModalLabel{{ patient.id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="editPatientModalLabel{{ patient.id }}">Sửa Thông Tin
+                                                            Bệnh Nhân</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ url_for('edit_patient', patient_id=patient.id) }}"
+                                                              method="POST">
+                                                            <div class="mb-3">
+                                                                <label for="editFullName{{ patient.id }}"
+                                                                       class="form-label">Họ và tên</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="editFullName{{ patient.id }}"
+                                                                       name="full_name"
+                                                                       value="{{ patient.full_name or '' }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editIdCard{{ patient.id }}"
+                                                                       class="form-label">Số căn cước</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="editIdCard{{ patient.id }}"
+                                                                       name="id_card" value="{{ patient.id_card }}"
+                                                                       required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editDateOfBirth{{ patient.id }}"
+                                                                       class="form-label">Ngày sinh</label>
+                                                                <input type="date" class="form-control"
+                                                                       id="editDateOfBirth{{ patient.id }}"
+                                                                       name="date_of_birth"
+                                                                       value="{{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else '' }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editGender{{ patient.id }}"
+                                                                       class="form-label">Giới tính</label>
+                                                                <select class="form-control"
+                                                                        id="editGender{{ patient.id }}" name="gender">
+                                                                    <option value="">Chọn giới tính</option>
+                                                                    <option value="M"
+                                                                            {% if patient.gender and patient.gender.value == 'M' %}selected{% endif %}>
+                                                                        Nam
+                                                                    </option>
+                                                                    <option value="F"
+                                                                            {% if patient.gender and patient.gender.value == 'F' %}selected{% endif %}>
+                                                                        Nữ
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editPhone{{ patient.id }}"
+                                                                       class="form-label">Số điện thoại</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="editPhone{{ patient.id }}"
+                                                                       name="phone" value="{{ patient.phone or '' }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editAddress{{ patient.id }}"
+                                                                       class="form-label">Địa chỉ</label>
+                                                                <textarea class="form-control"
+                                                                          id="editAddress{{ patient.id }}"
+                                                                          name="address"
+                                                                          rows="4">{{ patient.address or '' }}</textarea>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Hủy
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Delete Patient Modal -->
+                                        <div class="modal fade" id="deletePatientModal{{ patient.id }}" tabindex="-1"
+                                             aria-labelledby="deletePatientModalLabel{{ patient.id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="deletePatientModalLabel{{ patient.id }}">Xác nhận
+                                                            xóa</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn muốn xóa bệnh nhân
+                                                        <strong>{{ patient.full_name or patient.id_card }}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Hủy
+                                                        </button>
+                                                        <form action="{{ url_for('delete_patient', patient_id=patient.id) }}"
+                                                              method="POST">
+                                                            <button type="submit" class="btn btn-danger">Xóa</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Không có dữ liệu</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('patientTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let row of rows) {
+                const fullName = row.cells[0].textContent.toLowerCase();
+                const idCard = row.cells[1].textContent.toLowerCase();
+                if (fullName.includes(searchValue) || idCard.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    </script>
+{% endblock %}

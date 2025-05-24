@@ -1,5 +1,6 @@
-from app import db
+from extensions import db
 import enum
+
 
 # Người dùng
 
@@ -7,6 +8,7 @@ class RoleEnum(enum.Enum):
     admin = "admin"
     doctor = "doctor"
     pharmacist = "pharmacist"
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -17,4 +19,3 @@ class User(db.Model):
     full_name = db.Column(db.String(100))
     role = db.Column(db.Enum(RoleEnum), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
-

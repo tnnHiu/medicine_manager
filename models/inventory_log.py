@@ -1,4 +1,5 @@
-from app import db
+from extensions import db
+
 
 # Log của kho thuốc
 

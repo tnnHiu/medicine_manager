@@ -4,6 +4,7 @@ from controllers.medicine_controller import register_medicine_routes
 from controllers.user_controller import register_user_routes
 from controllers.inventory_log_controller import register_inventory_log_routes
 from controllers.medicine_batches_controller import register_medicine_batch_routes
+from controllers.prescription_controller import register_prescription_routes
 
 
 def register_all_routes(app):
@@ -13,3 +14,4 @@ def register_all_routes(app):
     register_user_routes(app)
     register_inventory_log_routes(app)
     register_medicine_batch_routes(app)
+    register_prescription_routes(app)

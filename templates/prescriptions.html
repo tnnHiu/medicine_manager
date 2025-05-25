@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Danh sách đơn thuốc{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .btn-add-prescription {
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-add-prescription:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-action {
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .btn-add-prescription, .btn-action {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-file-medical me-2"></i>Danh sách đơn thuốc chờ cấp phát</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Đơn thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    {% if session.get('role') in ['doctor', 'admin'] %}
+                        <a href="{{ url_for('add_prescription') }}" class="btn btn-add-prescription">
+                            <i class="fas fa-plus me-1"></i>Thêm đơn thuốc
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Bệnh nhân</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if prescriptions %}
+                            {% for prescription in prescriptions %}
+                                <tr>
+                                    <td>{{ prescription.id }}</td>
+                                    <td>{{ prescription.patient.full_name if prescription.patient else 'N/A' }}</td>
+                                    <td>{{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</td>
+                                    <td>{{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>
+                                        <span class="badge bg-warning">Chờ cấp phát</span>
+                                    </td>
+                                    <td>
+                                        {% if session.get('role') in ['pharmacist', 'admin'] %}
+                                            <button type="button" class="btn btn-success btn-sm btn-action" data-bs-toggle="modal"
+                                                    data-bs-target="#dispenseModal{{ prescription.id }}">
+                                                Cấp phát
+                                            </button>
+                                            <!-- Dispense Modal -->
+                                            <div class="modal fade" id="dispenseModal{{ prescription.id }}" tabindex=-1"
+                                                 aria-labelledby="dispenseModalLabel{{ prescription.id }}"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="dispenseModalLabel{{ prescription.id }}">Xác nhận cấp phát</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Bạn có chắc chắn muốn cấp phát đơn thuốc ID <strong>{{ prescription.id }}</strong>?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                            <form action="{{ url_for('dispense_prescription', prescription_id=prescription.id) }}" method="POST">
+                                                                <button type="submit" class="btn btn-success">Cấp phát</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button type="button" class="btn btn-danger btn-sm btn-action" data-bs-toggle="modal"
+                                                    data-bs-target="#undispenseModal{{ prescription.id }}">
+                                                Hủy cấp phát
+                                            </button>
+                                            <!-- Undispense Modal -->
+                                            <div class="modal fade" id="undispenseModal{{ prescription.id }}" tabindex="-1"
+                                                 aria-labelledby="undispenseModalLabel{{ prescription.id }}"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="undispenseModalLabel{{ prescription.id }}">Xác nhận hủy cấp phát</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Bạn có chắc chắn muốn hủy cấp phát đơn thuốc ID <strong>{{ prescription.id }}</strong>?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                            <form action="{{ url_for('undispense_prescription', prescription_id=prescription.id) }}" method="POST">
+                                                                <button type="submit" class="btn btn-danger">Hủy cấp phát</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <a href="{{ url_for('prescription_details', prescription_id=prescription.id) }}"
+                                           class="btn btn-info btn-sm btn-action">Xem chi tiết</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Không có đơn thuốc chờ cấp phát</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

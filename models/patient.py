@@ -1,6 +1,5 @@
 from extensions import db
 
-from sqlalchemy import Enum
 import enum
 
 # Bệnh nhân

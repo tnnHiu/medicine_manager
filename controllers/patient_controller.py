@@ -1,10 +1,9 @@
 from flask import render_template, redirect, request, url_for, flash, session
 from controllers.auth_controller import login_required, role_required
-from models import Patient
+from models import Patient, Prescription
+from models.patient import GenderEnum
 from extensions import db
 from datetime import datetime
-
-from models.patient import GenderEnum
 
 
 def register_patient_routes(app):
@@ -13,8 +12,13 @@ def register_patient_routes(app):
     @role_required(['admin', 'doctor', 'pharmacist'])
     def patients():
         patients_list = Patient.query.all()
-        return render_template('patients.html',
-                               patients=patients_list)
+        # Tải trước đơn thuốc để tránh N+1 query
+        for patient in patients_list:
+            patient.prescriptions = Prescription.query.filter(
+                Prescription.patient_id == patient.id,
+                Prescription.status.in_(['pending', 'dispensed'])
+            ).all()
+        return render_template('patients.html', patients=patients_list)
 
     @app.route('/patients/add', methods=['POST'])
     @login_required
@@ -36,7 +40,7 @@ def register_patient_routes(app):
                 flash('Số căn cước đã tồn tại!', 'error')
                 return redirect(url_for('patients'))
 
-            if gender not in [g.value for g in GenderEnum]:
+            if gender and gender not in [g.value for g in GenderEnum]:
                 flash('Giới tính không hợp lệ!', 'error')
                 return redirect(url_for('patients'))
 
@@ -51,7 +55,6 @@ def register_patient_routes(app):
                 address=address
             )
 
-            # Lưu vào cơ sở dữ liệu
             db.session.add(new_patient)
             db.session.commit()
 
@@ -97,7 +100,6 @@ def register_patient_routes(app):
             patient.phone = phone
             patient.address = address
 
-            # Lưu vào cơ sở dữ liệu
             db.session.commit()
 
             flash('Cập nhật bệnh nhân thành công!', 'success')

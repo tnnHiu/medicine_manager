@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo đơn thuốc{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .add-item-btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+        }
+
+        .add-item-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .item-row {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .remove-item-btn {
+            color: #dc3545;
+            border: none;
+            background: none;
+        }
+
+        .alert-no-medicines {
+            background: #fff3cd;
+            color: #856504;
+            border-left: 4px solid #ffc107;
+        }
+
+        .stock-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .item-row .col-md-2, .item-row .col-md-1 {
+                margin-bottom: 0.5rem;
+            }
+
+            .add-item-btn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2><i class="fas fa-file-medical me-2"></i>Tạo đơn thuốc</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-plus me-2"></i>Thông tin đơn thuốc
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('add_prescription') }}" method="POST" id="prescriptionForm">
+                <div class="form-group">
+                    <label for="patient_id">Bệnh nhân</label>
+                    <select class="form-control" id="patient_id" name="patient_id" required>
+                        <option value="">Chọn bệnh nhân...</option>
+                        {% for patient in patients %}
+                            <option value="{{ patient.id }}">{{ patient.full_name }} (CMND: {{ patient.id_card }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {% if not available_medicines %}
+                    <div class="alert alert-no-medicines alert-dismissible fade show" role="alert">
+                        Không có thuốc nào khả dụng trong kho. Vui lòng kiểm tra lô thuốc!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% else %}
+                    <div id="prescription-items">
+                        <div class="item-row">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Thuốc</label>
+                                    <select class="form-control medicine-select" name="medicine_id[]" required>
+                                        <option value="">Chọn thuốc...</option>
+                                        {% for medicine in available_medicines %}
+                                            <option value="{{ medicine.id }}"
+                                                    data-stock="{{ medicine.total_stock|default(0) }}"
+                                                    data-unit="{{ medicine.unit|default('N/A') }}">{{ medicine.name|default('Thuốc không tên') }}
+                                                ({{ medicine.unit|default('N/A') }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="stock-info">Tồn kho: <span class="stock-value">0</span> <span
+                                            class="stock-unit"></span></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Liều lượng</label>
+                                    <input type="text" class="form-control" name="dosage[]" placeholder="VD: 500mg"
+                                           required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Tần suất</label>
+                                    <input type="text" class="form-control" name="frequency[]"
+                                           placeholder="VD: 2 lần/ngày" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Thời gian (ngày)</label>
+                                    <input type="text" class="form-control" name="duration[]" placeholder="VD: 5"
+                                           required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Số lượng</label>
+                                    <input type="number" class="form-control quantity-input" name="quantity[]" min="1"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-item-btn mb-3" id="addItemBtn"><i class="fas fa-plus"></i> Thêm
+                        thuốc
+                    </button>
+                {% endif %}
+                <button type="submit" class="btn btn-primary" {% if not available_medicines %}disabled{% endif %}>Tạo
+                    đơn
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            let itemCount = 1;
+
+            function updateStockInfo(select) {
+                const stock = parseInt($(select).find(':selected').data('stock')) || 0;
+                const unit = $(select).find(':selected').data('unit') || 'N/A';
+                const row = $(select).closest('.item-row');
+                row.find('.stock-value').text(stock);
+                row.find('.stock-unit').text(unit);
+                console.log('Selected medicine:', $(select).find(':selected').text(), 'Stock:', stock, 'Unit:', unit);
+            }
+
+            // Khởi tạo tồn kho cho mục đầu tiên
+            updateStockInfo($('.medicine-select').first());
+
+            // Xử lý thay đổi thuốc
+            $(document).on('change', '.medicine-select', function () {
+                updateStockInfo(this);
+            });
+
+            // Thêm mục thuốc mới
+            $('#addItemBtn').click(function () {
+                itemCount++;
+                const newItem = `
+                    <div class="item-row">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Thuốc</label>
+                                <select class="form-control medicine-select" name="medicine_id[]" required>
+                                    <option value="">Chọn thuốc...</option>
+                                    {% for medicine in available_medicines %}
+                                        <option value="{{ medicine.id }}"
+                                                data-stock="{{ medicine.total_stock|default(0) }}"
+                                                data-unit="{{ medicine.unit|default('N/A') }}">
+                    {{ medicine.name|default('Thuốc không tên') }} ({{ medicine.unit|default('N/A') }})</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="stock-info">Tồn kho: <span class="stock-value">0</span> <span class="stock-unit"></span></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Liều lượng</label>
+                                <input type="text" class="form-control" name="dosage[]" placeholder="VD: 500mg" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tần suất</label>
+                                <input type="text" class="form-control" name="frequency[]" placeholder="VD: 2 lần/ngày" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Thời gian (ngày)</label>
+                                <input type="text" class="form-control" name="duration[]" placeholder="VD: 5" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Số lượng</label>
+                                <input type="number" class="form-control quantity-input" name="quantity[]" min="1" required>
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="remove-item-btn" onclick="$(this).closest('.item-row').remove();"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $('#prescription-items').append(newItem);
+                updateStockInfo($('#prescription-items .item-row:last .medicine-select'));
+            });
+
+            // Kiểm tra số lượng trước khi submit
+            $('#prescriptionForm').submit(function (e) {
+                let valid = true;
+                $('.item-row').each(function () {
+                    const select = $(this).find('.medicine-select');
+                    const quantity = parseInt($(this).find('.quantity-input').val()) || 0;
+                    const stock = parseInt(select.find(':selected').data('stock')) || 0;
+                    const medicineName = select.find(':selected').text().trim();
+                    if (quantity <= 0) {
+                        alert(`Số lượng cho ${medicineName} phải lớn hơn 0!`);
+                        valid = false;
+                    } else if (quantity > stock) {
+                        alert(`Số lượng yêu cầu cho ${medicineName} (${quantity}) vượt quá tồn kho (${stock})!`);
+                        valid = false;
+                    }
+                });
+                if (!valid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+{% endblock %}

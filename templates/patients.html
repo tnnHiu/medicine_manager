@@ -3,145 +3,153 @@
 {% block title %}Quản lý người lấy thuốc{% endblock %}
 
 {% block extra_css %}
-    .search-bar {
-    max-width: 350px;
-    }
+    <style>
+        .search-bar {
+            max-width: 350px;
+        }
 
-    .search-bar .form-control {
-    border-radius: 20px 0 0 20px;
-    border: 1px solid var(--primary);
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    transition: box-shadow 0.2s, border-color 0.2s;
-    }
+        .search-bar .form-control {
+            border-radius: 20px 0 0 20px;
+            border: 1px solid var(--primary);
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
 
-    .search-bar .form-control:focus {
-    box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
-    border-color: var(--secondary);
-    }
+        .search-bar .form-control:focus {
+            box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+            border-color: var(--secondary);
+        }
 
-    .search-bar ..btn-search {
-    border-radius: 0 20px 20px 0;
-    padding: 0.6rem 1.2rem;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border: none;
-    font-size: 1.2rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    }
+        .search-bar .btn-search {
+            border-radius: 0 20px 20px 0;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            font-size: 1.2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-    .search-bar .btn-search:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-    }
+        .search-bar .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
 
-    .btn-add-patient {
-    border-radius: 20px;
-    padding: 0.6rem 1.2rem;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border: none;
-    font-size: 1rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    }
+        .btn-add-patient {
+            border-radius: 20px;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-    .btn-add-patient:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-    }
+        .btn-add-patient:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
 
-    .btn-add-patient i {
-    font-size: 1.2rem;
-    }
+        .btn-add-patient i {
+            font-size: 1.2rem;
+        }
 
-    .card {
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    background: #fff;
-    margin-bottom: 1.5rem;
-    }
+        .card {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: #fff;
+            margin-bottom: 1.5rem;
+        }
 
-    .card-header {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border-radius: 10px 10px 0 0;
-    padding: 1rem;
-    }
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+        }
 
-    .table {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    }
+        .table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
 
-    .table thead {
-    background: var(--primary);
-    color: var(--text-light);
-    }
+        .table thead {
+            background: var(--primary);
+            color: var(--text-light);
+        }
 
-    .table tbody tr {
-    transition: background 0.2s;
-    }
+        .table tbody tr {
+            transition: background 0.2s;
+        }
 
-    .table tbody tr:hover {
-    background: #f5faff;
-    }
+        .table tbody tr:hover {
+            background: #f5faff;
+        }
 
-    .btn-action {
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    }
+        .btn-action {
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-    .btn-action:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-    }
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
 
-    .modal-content {
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    }
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
 
-    .modal-header {
-    background: var(--primary);
-    color: var(--text-light);
-    border-radius: 10px 10px 0 0;
-    }
+        .modal-header {
+            background: var(--primary);
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+        }
 
-    .modal-body {
-    padding: 1.5rem;
-    }
+        .modal-body {
+            padding: 1.5rem;
+        }
 
-    .chart-container {
-    background: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: var(--shadow);
-    margin-bottom: 1.5rem;
-    }
+        .accordion-button {
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+        }
 
-    @media (max-width: 768px) {
-    .search-bar {
-    max-width: 100%;
-    margin-top: 0.5rem;
-    }
+        .accordion-body {
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
 
-    .table-responsive {
-    font-size: 0.85rem;
-    }
+        @media (max-width: 768px) {
+            .search-bar {
+                max-width: 100%;
+                margin-top: 0.5rem;
+            }
 
-    .btn-action, .btn-add-patient {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
-    }
+            .table-responsive {
+                font-size: 0.85rem;
+            }
 
-    .btn-add-patient i, .btn-search i {
-    font-size: 1rem;
-    }
-    }
+            .btn-action, .btn-add-patient {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .btn-add-patient i, .btn-search i {
+                font-size: 1rem;
+            }
+
+            .accordion-button {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -242,6 +250,7 @@
                         <th>Số căn cước</th>
                         <th>Số điện thoại</th>
                         <th>Ngày nhập</th>
+                        <th>Đơn thuốc</th>
                         <th>Thao tác</th>
                     </tr>
                     </thead>
@@ -257,6 +266,111 @@
                                         {{ patient.created_at.date() }}
                                     {% else %}
                                         N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set pending_prescriptions = patient.prescriptions|selectattr('status', 'equalto', 'pending')|list %}
+                                    {% set dispensed_prescriptions = patient.prescriptions|selectattr('status', 'equalto', 'dispensed')|list %}
+                                    {% if pending_prescriptions or dispensed_prescriptions %}
+                                        <div class="accordion" id="prescriptionsAccordion{{ patient.id }}">
+                                            {% if pending_prescriptions %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="pendingHeading{{ patient.id }}">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#pendingCollapse{{ patient.id }}"
+                                                                aria-expanded="false"
+                                                                aria-controls="pendingCollapse{{ patient.id }}">
+                                                            Đơn chờ cấp phát ({{ pending_prescriptions|length }})
+                                                        </button>
+                                                    </h2>
+                                                    <div id="pendingCollapse{{ patient.id }}"
+                                                         class="accordion-collapse collapse"
+                                                         aria-labelledby="pendingHeading{{ patient.id }}"
+                                                         data-bs-parent="#prescriptionsAccordion{{ patient.id }}">
+                                                        <div class="accordion-body">
+                                                            <table class="table table-sm">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>ID</th>
+                                                                    <th>Bác sĩ</th>
+                                                                    <th>Ngày tạo</th>
+                                                                    <th>Thao tác</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for prescription in pending_prescriptions|sort(attribute='created_at') %}
+                                                                    <tr>
+                                                                        <td>{{ prescription.id }}</td>
+                                                                        <td>{{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</td>
+                                                                        <td>{{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                                                        <td>
+                                                                            {% if session.get('role') in ['pharmacist', 'admin'] %}
+                                                                                <form action="{{ url_for('dispense_prescription', prescription_id=prescription.id) }}"
+                                                                                      method="POST"
+                                                                                      style="display:inline;">
+                                                                                    <button type="submit"
+                                                                                            class="btn btn-success btn-sm">
+                                                                                        Cấp phát
+                                                                                    </button>
+                                                                                </form>
+                                                                            {% endif %}
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if dispensed_prescriptions %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="dispensedHeading{{ patient.id }}">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#dispensedCollapse{{ patient.id }}"
+                                                                aria-expanded="false"
+                                                                aria-controls="dispensedCollapse{{ patient.id }}">
+                                                            Đơn đã cấp phát ({{ dispensed_prescriptions|length }})
+                                                        </button>
+                                                    </h2>
+                                                    <div id="dispensedCollapse{{ patient.id }}"
+                                                         class="accordion-collapse collapse"
+                                                         aria-labelledby="dispensedHeading{{ patient.id }}"
+                                                         data-bs-parent="#prescriptionsAccordion{{ patient.id }}">
+                                                        <div class="accordion-body">
+                                                            <table class="table table-sm">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>ID</th>
+                                                                    <th>Bác sĩ</th>
+                                                                    <th>Ngày tạo</th>
+                                                                    <th>Thao tác</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for prescription in dispensed_prescriptions|sort(attribute='created_at', reverse=True) %}
+                                                                    <tr>
+                                                                        <td>{{ prescription.id }}</td>
+                                                                        <td>{{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</td>
+                                                                        <td>{{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                                                        <td>
+                                                                            <a href="{{ url_for('prescription_details', prescription_id=prescription.id) }}"
+                                                                               class="btn btn-info btn-sm">Xem chi
+                                                                                tiết</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        Không có đơn thuốc
                                     {% endif %}
                                 </td>
                                 <td>
@@ -389,7 +503,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="5" class="text-center">Không có dữ liệu</td>
+                            <td colspan="6" class="text-center">Không có dữ liệu</td>
                         </tr>
                     {% endif %}
                     </tbody>

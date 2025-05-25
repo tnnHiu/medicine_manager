@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Chi tiết đơn thuốc{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+        }
+
+        .table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table thead {
+            background: var(--primary);
+            color: var(--text-light);
+        }
+
+        .table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .table tbody tr:hover {
+            background: #f5faff;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-file-medical me-2"></i>Chi tiết đơn thuốc</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-info-circle me-2"></i>Thông tin đơn thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>ID đơn thuốc:</strong> {{ prescription.id }}</p>
+                    <p><strong>Bệnh nhân:</strong> {{ prescription.patient.full_name or 'N/A' }} (CMND: {{ prescription.patient.id_card }})</p>
+                    <p><strong>Bác sĩ:</strong> {{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Ngày tạo:</strong> {{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                    <p><strong>Trạng thái:</strong>
+                        {% if prescription.status == 'pending' %}
+                            <span class="badge bg-warning">Chờ cấp phát</span>
+                        {% elif prescription.status == 'dispensed' %}
+                            <span class="badge bg-success">Đã cấp phát</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <h5>Danh sách thuốc</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tên thuốc</th>
+                            <th>Lô thuốc</th>
+                            <th>Số lượng</th>
+                            <th>Liều lượng</th>
+                            <th>Tần suất</th>
+                            <th>Thời gian (ngày)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if prescription.items %}
+                            {% for item in prescription.items %}
+                                <tr>
+                                    <td>{{ item.medicine.name if item.medicine else 'N/A' }} ({{ item.medicine.unit if item.medicine else 'N/A' }})</td>
+                                    <td>{{ item.batch.batch_number if item.batch else 'N/A' }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.dosage }}</td>
+                                    <td>{{ item.frequency }}</td>
+                                    <td>{{ item.duration }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Không có thuốc trong đơn</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <a href="{{ url_for('patients') }}" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+{% endblock %}

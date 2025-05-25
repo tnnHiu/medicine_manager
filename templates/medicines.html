@@ -1,223 +1,181 @@
 {% extends "base.html" %}
 
-{% block title %}Quản lý Kho Thuốc{% endblock %}
+{% block title %}Quản lý thuốc{% endblock %}
 
 {% block extra_css %}
     .search-bar {
-    max-width: 350px;
+        max-width: 350px;
     }
 
     .search-bar .form-control {
-    border-radius: 20px 0 0 20px;
-    border: 1px solid var(--primary);
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    transition: box-shadow 0.2s, border-color 0.2s;
+        border-radius: 20px 0 0 20px;
+        border: 1px solid var(--primary);
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+        transition: box-shadow 0.2s, border-color 0.2s;
     }
 
     .search-bar .form-control:focus {
-    box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
-    border-color: var(--secondary);
+        box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+        border-color: var(--secondary);
     }
 
     .search-bar .btn-search {
-    border-radius: 0 20px 20px 0;
-    padding: 0.6rem 1.2rem;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border: none;
-    font-size: 1.2rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 0 20px 20px 0;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border: none;
+        font-size: 1.2rem;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .search-bar .btn-search:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
     }
 
     .btn-add-medicine {
-    border-radius: 20px;
-    padding: 0.6rem 1.2rem;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border: none;
-    font-size: 1rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 20px;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border: none;
+        font-size: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .btn-add-medicine:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-    }
-
-    .btn-add-medicine i {
-    font-size: 1.2rem;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
     }
 
     .card {
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    background: #fff;
-    margin-bottom: 1.5rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        background: #fff;
+        margin-bottom: 1.5rem;
     }
 
     .card-header {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    color: var(--text-light);
-    border-radius: 10px 10px 0 0;
-    padding: 1rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border-radius: 10px 10px 0 0;
+        padding: 1rem;
     }
 
     .table {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
     }
 
     .table thead {
-    background: var(--primary);
-    color: var(--text-light);
-    }
-
-    .table tbody tr {
-    transition: background 0.2s;
+        background: var(--primary);
+        color: var(--text-light);
     }
 
     .table tbody tr:hover {
-    background: #f5faff;
+        background: #f5faff;
     }
 
     .btn-action {
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .btn-action:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
     }
 
     .modal-content {
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
     }
 
     .modal-header {
-    background: var(--primary);
-    color: var(--text-light);
-    border-radius: 10px 10px 0 0;
-    }
-
-    .modal-body {
-    padding: 1.5rem;
-    }
-
-    .chart-container {
-    background: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: var(--shadow);
-    margin-bottom: 1.5rem;
+        background: var(--primary);
+        color: var(--text-light);
+        border-radius: 10px 10px 0 0;
     }
 
     @media (max-width: 768px) {
-    .search-bar {
-    max-width: 100%;
-    margin-top: 0.5rem;
-    }
+        .search-bar {
+            max-width: 100%;
+            margin-top: 0.5rem;
+        }
 
-    .table-responsive {
-    font-size: 0.85rem;
-    }
+        .table-responsive {
+            font-size: 0.85rem;
+        }
 
-    .btn-action, .btn-add-medicine {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
-    }
-
-    .btn-add-medicine i, .btn-search i {
-    font-size: 1rem;
-    }
+        .btn-action, .btn-add-medicine {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
     }
 {% endblock %}
 
 {% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div class="row mb-3 align-items-center">
         <div class="col-md-12">
-            <h2><i class="fas fa-warehouse me-2"></i>Danh sách Kho Thuốc</h2>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="chart-container">
-                <canvas id="medicineChart"></canvas>
-            </div>
+            <h2><i class="fas fa-capsules me-2"></i>Danh sách thuốc</h2>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-list me-2"></i>Danh sách Thuốc
+            <i class="fas fa-list me-2"></i>Danh sách thuốc
         </div>
         <div class="card-body">
             <div class="row mb-3 align-items-center">
                 <div class="col-md-6">
                     {% if session.get('role') in ['admin', 'pharmacist'] %}
-                        <button type="button" class="btn btn-add-medicine" data-bs-toggle="modal"
-                                data-bs-target="#addMedicineModal">
+                        <button type="button" class="btn btn-add-medicine" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
                             <i class="fas fa-plus me-2"></i>Thêm thuốc mới
                         </button>
                     {% endif %}
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
-                    <form class="search-bar d-flex">
-                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm theo mã hoặc tên thuốc..."
-                               aria-label="Search" id="searchInput">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm thuốc..." aria-label="Search" id="medicineSearchInput">
                         <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
             </div>
 
             <!-- Add Medicine Modal -->
-            <div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel"
-                 aria-hidden="true">
+            <div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addMedicineModalLabel">Thêm Thuốc Mới</h5>
+                            <h5 class="modal-title" id="addMedicineModalLabel">Thêm thuốc mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="POST">
+                            <form action="{{ url_for('add_medicine') }}" method="POST">
                                 <div class="mb-3">
-                                    <label for="addCode" class="form-label">Mã thuốc</label>
-                                    <input type="text" class="form-control" id="addCode" name="code" required>
+                                    <label for="addMedicineName" class="form-label">Tên thuốc</label>
+                                    <input type="text" class="form-control" id="addMedicineName" name="name" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="addName" class="form-label">Tên thuốc</label>
-                                    <input type="text" class="form-control" id="addName" name="name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="addUnit" class="form-label">Đơn vị</label>
-                                    <input type="text" class="form-control" id="addUnit" name="unit" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="addQuantity" class="form-label">Số lượng</label>
-                                    <input type="number" class="form-control" id="addQuantity" name="quantity" min="0"
-                                           required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="addExpirationDate" class="form-label">Hạn sử dụng</label>
-                                    <input type="date" class="form-control" id="addExpirationDate"
-                                           name="expiration_date">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="addCreatedAt" class="form-label">Ngày nhập</label>
-                                    <input type="date" class="form-control" id="addCreatedAt" name="created_at">
+                                    <label for="addMedicineUnit" class="form-label">Đơn vị</label>
+                                    <input type="text" class="form-control" id="addMedicineUnit" name="unit" placeholder="VD: viên, chai" required>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -232,212 +190,107 @@
             <div class="table-responsive">
                 <table class="table table-hover" id="medicineTable">
                     <thead>
-                    <tr>
-                        <th>Mã thuốc</th>
-                        <th>Tên thuốc</th>
-                        <th>Đơn vị</th>
-                        <th>Số lượng</th>
-                        <th>Hạn sử dụng</th>
-                        <th>Ngày nhập</th>
-                        <th>Thao tác</th>
-                    </tr>
+                        <tr>
+                            <th>Tên thuốc</th>
+                            <th>Mã thuốc</th>
+                            <th>Đơn vị</th>
+                            <th>Thao tác</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% if medicines %}
-                        {% for medicine in medicines %}
-                            <tr>
-                                <td>{{ medicine.code }}</td>
-                                <td>{{ medicine.name }}</td>
-                                <td>{{ medicine.unit }}</td>
-                                <td>{{ medicine.quantity }}</td>
-                                <td>
-                                    {% if medicine.expiration_date %}
-                                        {{ medicine.expiration_date }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if medicine.created_at %}
-                                        {{ medicine.created_at.date() }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if session.get('role') in ['admin', 'pharmacist'] %}
-                                        <button type="button" class="btn btn-sm btn-warning btn-action"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editMedicineModal{{ medicine.id }}">Sửa
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger btn-action"
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ medicine.id }}">
-                                            Xóa
-                                        </button>
-                                        <!-- Edit Medicine Modal -->
-                                        <div class="modal fade" id="editMedicineModal{{ medicine.id }}" tabindex="-1"
-                                             aria-labelledby="editMedicineModalLabel{{ medicine.id }}"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="editMedicineModalLabel{{ medicine.id }}">Sửa Thông Tin
-                                                            Thuốc</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form action="" method="POST">
-                                                            <div class="mb-3">
-                                                                <label for="editCode{{ medicine.id }}"
-                                                                       class="form-label">Mã thuốc</label>
-                                                                <input type="text" class="form-control"
-                                                                       id="editCode{{ medicine.id }}" name="code"
-                                                                       value="{{ medicine.code }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="editName{{ medicine.id }}"
-                                                                       class="form-label">Tên thuốc</label>
-                                                                <input type="text" class="form-control"
-                                                                       id="editName{{ medicine.id }}" name="name"
-                                                                       value="{{ medicine.name }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="editUnit{{ medicine.id }}"
-                                                                       class="form-label">Đơn vị</label>
-                                                                <input type="text" class="form-control"
-                                                                       id="editUnit{{ medicine.id }}" name="unit"
-                                                                       value="{{ medicine.unit }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="editQuantity{{ medicine.id }}"
-                                                                       class="form-label">Số lượng</label>
-                                                                <input type="number" class="form-control"
-                                                                       id="editQuantity{{ medicine.id }}"
-                                                                       name="quantity" value="{{ medicine.quantity }}"
-                                                                       min="0" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="editExpirationDate{{ medicine.id }}"
-                                                                       class="form-label">Hạn sử dụng</label>
-                                                                <input type="date" class="form-control"
-                                                                       id="editExpirationDate{{ medicine.id }}"
-                                                                       name="expiration_date"
-                                                                       value="{{ medicine.expiration_date or '' }}">
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="editCreatedAt{{ medicine.id }}"
-                                                                       class="form-label">Ngày nhập</label>
-                                                                <input type="date" class="form-control"
-                                                                       id="editCreatedAt{{ medicine.id }}"
-                                                                       name="created_at"
-                                                                       value="{{ medicine.created_at.date() if medicine.created_at else '' }}">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">Hủy
-                                                                </button>
-                                                                <button type="submit" class="btn btn-primary">Lưu
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
+                        {% if medicines %}
+                            {% for medicine in medicines %}
+                                <tr>
+                                    <td>{{ medicine.name }}</td>
+                                    <td>{{ medicine.code }}</td>
+                                    <td>{{ medicine.unit }}</td>
+                                    <td>
+                                        {% if session.get('role') in ['admin', 'pharmacist'] %}
+                                            <button type="button" class="btn btn-sm btn-warning btn-action" data-bs-toggle="modal" data-bs-target="#editMedicineModal{{ medicine.id }}">
+                                                Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger btn-action" data-bs-toggle="modal" data-bs-target="#deleteMedicineModal{{ medicine.id }}">
+                                                Xóa
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <!-- Edit Medicine Modal -->
+                                <div class="modal fade" id="editMedicineModal{{ medicine.id }}" tabindex="-1" aria-labelledby="editMedicineModalLabel{{ medicine.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editMedicineModalLabel{{ medicine.id }}">Sửa thuốc</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                        </div>
-                                        <!-- Delete Medicine Modal -->
-                                        <div class="modal fade" id="deleteModal{{ medicine.id }}" tabindex="-1"
-                                             aria-labelledby="deleteModalLabel{{ medicine.id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="deleteModalLabel{{ medicine.id }}">
-                                                            Xác nhận xóa</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                            <div class="modal-body">
+                                                <form action="{{ url_for('edit_medicine', medicine_id=medicine.id) }}" method="POST">
+                                                    <div class="mb-3">
+                                                        <label for="editMedicineName{{ medicine.id }}" class="form-label">Tên thuốc</label>
+                                                        <input type="text" class="form-control" id="editMedicineName{{ medicine.id }}" name="name" value="{{ medicine.name }}" required>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        Bạn có chắc chắn muốn xóa thuốc
-                                                        <strong>{{ medicine.name }}</strong>?
+                                                    <div class="mb-3">
+                                                        <label for="editMedicineUnit{{ medicine.id }}" class="form-label">Đơn vị</label>
+                                                        <input type="text" class="form-control" id="editMedicineUnit{{ medicine.id }}" name="unit" value="{{ medicine.unit }}" required>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Hủy
-                                                        </button>
-                                                        <form action="" method="POST" style="display:inline;">
-                                                            <button type="submit" class="btn btn-danger">Xóa</button>
-                                                        </form>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
                                                     </div>
-                                                </div>
+                                                </form>
                                             </div>
                                         </div>
-                                    {% endif %}
-                                </td>
+                                    </div>
+                                </div>
+                                <!-- Delete Medicine Modal -->
+                                <div class="modal fade" id="deleteMedicineModal{{ medicine.id }}" tabindex="-1" aria-labelledby="deleteMedicineModalLabel{{ medicine.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteMedicineModalLabel{{ medicine.id }}">Xác nhận xóa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Bạn có chắc chắn muốn xóa thuốc <strong>{{ medicine.name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                <form action="{{ url_for('delete_medicine', medicine_id=medicine.id) }}" method="POST">
+                                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Không có dữ liệu</td>
                             </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Không có dữ liệu</td>
-                        </tr>
-                    {% endif %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-{% endblock %}
 
-{% block scripts %}
     <script>
-        // Generate chart data directly in the template
-        const labels = [
-            {% for medicine in medicines %}
-                "{{ medicine.name | default('Unknown') }}"{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ];
-        const quantities = [
-            {% for medicine in medicines %}
-                {{ medicine.quantity | default(0) }}{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ];
+        // Tìm kiếm thuốc
+        document.getElementById('medicineSearchInput').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('medicineTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-        const ctx = document.getElementById('medicineChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Số lượng thuốc',
-                    data: quantities,
-                    backgroundColor: 'rgba(30, 136, 229, 0.6)',
-                    borderColor: 'rgba(30, 136, 229, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {beginAtZero: true}
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    tooltip: {
-                        enabled: true
-                    }
+            for (let row of rows) {
+                const name = row.cells[0].textContent.toLowerCase();
+                const code = row.cells[1].textContent.toLowerCase();
+                const unit = row.cells[2].textContent.toLowerCase();
+                if (name.includes(searchValue) || code.includes(searchValue) || unit.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
             }
-        });
-
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchValue = this.value.toLowerCase();
-            document.querySelectorAll('#medicineTable tbody tr').forEach(row => {
-                const name = row.cells[1].textContent.toLowerCase();
-                const code = row.cells[0].textContent.toLowerCase();
-                row.style.display = name.includes(searchValue) || code.includes(searchValue) ? '' : 'none';
-            });
         });
     </script>
 {% endblock %}

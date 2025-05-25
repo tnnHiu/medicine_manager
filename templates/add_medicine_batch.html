@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Thêm lô thuốc{% endblock %}
+
+{% block extra_css %}
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+        }
+
+        .medicine-item {
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .add-medicine-btn {
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .add-medicine-btn:hover {
+            text-decoration: underline;
+        }
+
+        .remove-medicine-btn {
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .remove-medicine-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .medicine-item {
+                padding: 0.8rem;
+            }
+
+            .card-header {
+                font-size: 1rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2><i class="fas fa-plus me-2"></i>Thêm lô thuốc mới</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-box me-2"></i>Thông tin lô thuốc
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('add_medicine_batch') }}" method="POST">
+                <h6>Thông tin lô</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="batchNumber" class="form-label">Mã lô</label>
+                        <input type="text" class="form-control" id="batchNumber" name="batch_number" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="supplier" class="form-label">Nhà cung cấp</label>
+                        <input type="text" class="form-control" id="supplier" name="supplier">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="purchaseDate" class="form-label">Ngày nhập</label>
+                        <input type="date" class="form-control" id="purchaseDate" name="purchase_date">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="purchasePrice" class="form-label">Giá nhập</label>
+                        <input type="number" class="form-control" id="purchasePrice" name="purchase_price" step="0.01" min="0">
+                    </div>
+                    <div class="col-md-12 mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" name="is_active" checked>
+                        <label class="form-check-label" for="isActive">Hoạt động</label>
+                    </div>
+                </div>
+
+                <h6>Thuốc trong lô</h6>
+                <div id="medicine-items">
+                    <div class="medicine-item">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Thuốc</label>
+                                <select class="form-control medicine-select" name="medicine_id[]" required>
+                                    <option value="">Chọn thuốc...</option>
+                                    {% for medicine in medicines %}
+                                        <option value="{{ medicine.id }}" data-unit="{{ medicine.unit }}">{{ medicine.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Đơn vị</label>
+                                <input type="text" class="form-control unit-input" readonly>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" name="quantity[]" min="1" required>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Hết hạn</label>
+                                <input type="date" class="form-control" name="expiration_date[]" required>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Ghi chú</label>
+                                <input type="text" class="form-control" name="note[]">
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="remove-medicine-btn"><i class="fas fa-trash me-1"></i>Xóa</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <span class="add-medicine-btn"><i class="fas fa-plus me-1"></i>Thêm thuốc</span>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{{ url_for('medicine_batches') }}" class="btn btn-secondary me-2">Hủy</a>
+                    <button type="submit" class="btn btn-primary">Thêm lô</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // Update unit when medicine is selected
+            function updateUnit($select) {
+                const $parent = $select.closest('.medicine-item');
+                const selectedOption = $select.find('option:selected');
+                const unit = selectedOption.data('unit') || '';
+                $parent.find('.unit-input').val(unit);
+            }
+
+            // Initialize unit for existing select elements
+            $('.medicine-select').each(function() {
+                updateUnit($(this));
+            }).on('change', function() {
+                updateUnit($(this));
+            });
+
+            // Add medicine item
+            $('.add-medicine-btn').on('click', function() {
+                const newItem = $(`
+                    <div class="medicine-item">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Thuốc</label>
+                                <select class="form-control medicine-select" name="medicine_id[]" required>
+                                    <option value="">Chọn thuốc...</option>
+                                    {% for medicine in medicines %}
+                                        <option value="{{ medicine.id }}" data-unit="{{ medicine.unit }}">{{ medicine.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Đơn vị</label>
+                                <input type="text" class="form-control unit-input" readonly>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" name="quantity[]" min="1" required>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Hết hạn</label>
+                                <input type="date" class="form-control" name="expiration_date[]" required>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Ghi chú</label>
+                                <input type="text" class="form-control" name="note[]">
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="remove-medicine-btn"><i class="fas fa-trash me-1"></i>Xóa</span>
+                        </div>
+                    </div>
+                `);
+                $('#medicine-items').append(newItem);
+
+                // Initialize unit for new select element
+                newItem.find('.medicine-select').on('change', function() {
+                    updateUnit($(this));
+                });
+
+                // Handle remove button for new item
+                newItem.find('.remove-medicine-btn').on('click', function() {
+                    newItem.remove();
+                });
+            });
+
+            // Remove medicine item
+            $(document).on('click', '.remove-medicine-btn', function() {
+                $(this).closest('.medicine-item').remove();
+            });
+        });
+    </script>
+{% endblock %}

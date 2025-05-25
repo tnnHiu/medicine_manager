@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+
+{% block title %}Thuốc trong lô {{ batch.batch_number }}{% endblock %}
+
+{% block extra_css %}
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .search-bar {
+            max-width: 350px;
+        }
+
+        .search-bar .form-control {
+            border-radius: 20px 0 0 20px;
+            border: 1px solid var(--primary);
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .search-bar .form-control:focus {
+            box-shadow: 0 0 8px rgba(30, 136, 229, 0.3);
+            border-color: var(--secondary);
+        }
+
+        .search-bar .btn-search {
+            border-radius: 0 20px 20px 0;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+        }
+
+        .search-bar .btn-search:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-add-item {
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-add-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: var(--primary);
+            color: var(--text-light);
+        }
+
+        .table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .btn-action {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.85rem;
+            border-radius: 5px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: var(--text-light);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 0.85rem;
+        }
+
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                max-width: 100%;
+                margin-top: 0.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+
+            .btn-action, .btn-add-item {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .card-header {
+                font-size: 1rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2><i class="fas fa-box me-2"></i>Thuốc trong lô {{ batch.batch_number }}</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Danh sách thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    {% if session.get('role') in ['admin', 'pharmacist'] %}
+                        <button type="button" class="btn btn-add-item" data-bs-toggle="modal" data-bs-target="#addBatchItemModal">
+                            <i class="fas fa-plus me-1"></i>Thêm thuốc
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm thuốc..." id="itemSearchInput">
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="batchItemTable">
+                    <thead>
+                        <tr>
+                            <th>Thuốc</th>
+                            <th>Mã</th>
+                            <th>Đơn vị</th>
+                            <th>Số lượng</th>
+                            <th>Hết hạn</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if batch.batch_items %}
+                            {% for item in batch.batch_items %}
+                                <tr>
+                                    <td>{{ item.medicine.name }}</td>
+                                    <td>{{ item.medicine.code }}</td>
+                                    <td>{{ item.medicine.unit }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.expiration_date.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if session.get('role') in ['admin', 'pharmacist'] %}
+                                            <button type="button" class="btn btn-sm btn-warning btn-action" data-bs-toggle="modal" data-bs-target="#editBatchItemModal{{ item.id }}">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger btn-action" data-bs-toggle="modal" data-bs-target="#deleteBatchItemModal{{ item.id }}">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <!-- Edit Batch Item Modal -->
+                                <div class="modal fade" id="editBatchItemModal{{ item.id }}" tabindex="-1" aria-labelledby="editBatchItemModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editBatchItemModalLabel{{ item.id }}">Sửa thuốc trong lô</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ url_for('edit_batch_item', batch_id=batch.id, item_id=item.id) }}" method="POST">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Thuốc</label>
+                                                        <input type="text" class="form-control" value="{{ item.medicine.name }}" disabled>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="editQuantity{{ item.id }}" class="form-label">Số lượng</label>
+                                                        <input type="number" class="form-control" id="editQuantity{{ item.id }}" name="quantity" value="{{ item.quantity }}" min="1" required>
+                                                        <div class="invalid-feedback">Số lượng phải lớn hơn 0!</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="editExpirationDate{{ item.id }}" class="form-label">Ngày hết hạn</label>
+                                                        <input type="date" class="form-control" id="editExpirationDate{{ item.id }}" name="expiration_date" value="{{ item.expiration_date.strftime('%Y-%m-%d') }}" required>
+                                                        <div class="invalid-feedback">Vui lòng chọn ngày hợp lệ!</div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Delete Batch Item Modal -->
+                                <div class="modal fade" id="deleteBatchItemModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteBatchItemModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteBatchItemModalLabel{{ item.id }}">Xác nhận xóa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Xóa thuốc <strong>{{ item.medicine.name }}</strong> khỏi lô <strong>{{ batch.batch_number }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                <form action="{{ url_for('delete_batch_item', batch_id=batch.id, item_id=item.id) }}" method="POST">
+                                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Không có thuốc trong lô</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Batch Item Modal -->
+            <div class="modal fade" id="addBatchItemModal" tabindex="-1" aria-labelledby="addBatchItemModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addBatchItemModalLabel">Thêm thuốc vào lô {{ batch.batch_number }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addBatchItemForm" action="{{ url_for('add_batch_item', batch_id=batch.id) }}" method="POST">
+                                <div class="mb-3">
+                                    <label for="addMedicine" class="form-label">Thuốc</label>
+                                    <select class="form-control" id="addMedicine" name="medicine_id" required>
+                                        <option value="">Chọn thuốc...</option>
+                                        {% for medicine in medicines %}
+                                            <option value="{{ medicine.id }}">{{ medicine.name }} ({{ medicine.unit or 'N/A' }})</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn thuốc!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addQuantity" class="form-label">Số lượng</label>
+                                    <input type="number" class="form-control" id="addQuantity" name="quantity" min="1" required>
+                                    <div class="invalid-feedback">Số lượng phải lớn hơn 0!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addExpirationDate" class="form-label">Ngày hết hạn</label>
+                                    <input type="date" class="form-control" id="addExpirationDate" name="expiration_date" required>
+                                    <div class="invalid-feedback">Vui lòng chọn ngày hợp lệ!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addNote" class="form-label">Ghi chú</label>
+                                    <input type="text" class="form-control" id="addNote" name="note">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="submit" class="btn btn-primary" id="submitAddItem">Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                const $form = $('#addBatchItemForm');
+                const $medicineSelect = $form.find('#addMedicine');
+                const $quantityInput = $form.find('#addQuantity');
+                const $expirationDateInput = $form.find('#addExpirationDate');
+
+                // Medicine validation
+                if (!$medicineSelect.val()) {
+                    $medicineSelect.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $medicineSelect.removeClass('is-invalid');
+                }
+
+                // Quantity validation
+                const quantity = parseInt($quantityInput.val());
+                if (isNaN(quantity) || quantity <= 0) {
+                    $quantityInput.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $quantityInput.removeClass('is-invalid');
+                }
+
+                // Expiration date validation
+                const today = new Date().toISOString().split('T')[0];
+                if (!$expirationDateInput.val() || $expirationDateInput.val() < today) {
+                    $expirationDateInput.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $expirationDateInput.removeClass('is-invalid');
+                }
+
+                return isValid;
+            }
+
+            // Form submit
+            $('#addBatchItemForm').on('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                const $submitBtn = $('#submitAddItem');
+                $submitBtn.prop('disabled', true).addClass('loading-spinner').text('Đang thêm...');
+            });
+
+            // Reset form on modal close
+            $('#addBatchItemModal').on('hidden.bs.modal', function() {
+                const $form = $('#addBatchItemForm');
+                $form.find('#addMedicine').val('');
+                $form.find('#addQuantity').val('');
+                $form.find('#addExpirationDate').val('');
+                $form.find('#addNote').val('');
+                $form.find('.is-invalid').removeClass('is-invalid');
+                $('#submitAddItem').prop('disabled', false).removeClass('loading-spinner').text('Thêm');
+            });
+
+            // Focus on medicine select when modal opens
+            $('#addBatchItemModal').on('shown.bs.modal', function() {
+                $('#addMedicine').focus();
+            });
+
+            // Real-time input validation
+            $('#addQuantity').on('input', function() {
+                const value = parseInt($(this).val());
+                if (isNaN(value) || value <= 0) {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            $('#addExpirationDate').on('input', function() {
+                const today = new Date().toISOString().split('T')[0];
+                if (!$(this).val() || $(this).val() < today) {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // Item search
+            $('#itemSearchInput').on('input', function() {
+                const searchValue = $(this).val().toLowerCase();
+                $('#batchItemTable tbody tr').each(function() {
+                    const medicineName = $(this).find('td:eq(0)').text().toLowerCase();
+                    const medicineCode = $(this).find('td:eq(1)').text().toLowerCase();
+                    const unit = $(this).find('td:eq(2)').text().toLowerCase();
+                    $(this).toggle(medicineName.includes(searchValue) || medicineCode.includes(searchValue) || unit.includes(searchValue));
+                });
+            });
+        });
+    </script>
+{% endblock %}

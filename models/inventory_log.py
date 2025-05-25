@@ -14,7 +14,6 @@ class InventoryLog(db.Model):
     performed_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     note = db.Column(db.Text)
-
     medicine = db.relationship('Medicine')
     batch = db.relationship('MedicineBatch')
     user = db.relationship('User')

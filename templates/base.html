@@ -29,99 +29,234 @@
         .navbar {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             box-shadow: var(--shadow);
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            max-width: 1400px; /* Tăng chiều rộng container */
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .navbar-brand {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
             color: var(--text-light) !important;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
 
         .navbar-brand i {
             margin-right: 0.5rem;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap; /* Ngăn wrap xuống dòng */
+            margin: 0;
+        }
+
+        .nav-item {
+            margin: 0 0.3rem; /* Giảm khoảng cách giữa các mục */
         }
 
         .nav-link {
             color: var(--text-light) !important;
             font-weight: 500;
-            padding: 0.5rem 1rem;
+            font-size: 0.95rem; /* Giảm nhẹ font-size */
+            padding: 0.5rem 0.8rem;
             border-radius: 6px;
             transition: all 0.3s ease;
-            position: relative;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .nav-link i {
+            margin-right: 0.3rem;
+            font-size: 1rem;
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .nav-link .badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.7rem;
+            top: -6px;
+            right: -6px;
+            font-size: 0.6rem;
+            background-color: #e91e63;
+        }
+
+        .dropdown-menu {
+            background: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 0.4rem;
+            min-width: 200px;
+        }
+
+        .dropdown-item {
+            color: var(--secondary);
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--primary);
         }
 
         .navbar-text {
             color: var(--text-light);
             font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            margin-right: 0.8rem;
+            white-space: nowrap;
         }
 
-        .btn-light {
-            border-radius: 8px;
+        .navbar-text i {
+            margin-right: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .btn-logout {
+            border-radius: 20px;
             padding: 0.4rem 0.8rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--text-light);
+            color: var(--secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
-        .btn-light:hover {
+        .btn-logout:hover {
+            background: #f5f5f5;
             transform: translateY(-2px);
             box-shadow: var(--shadow);
         }
 
+        .btn-logout i {
+            margin-right: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .navbar-toggler {
+            border: none;
+            color: var(--text-light);
+            padding: 0.4rem;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
         /* Container Styles */
         .container {
-            margin-top: 1.5rem;
+            max-width: 1400px; /* Đồng bộ với navbar */
+            margin: 2rem auto;
             animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .navbar-container {
+                max-width: 100%;
+                padding: 0 1rem;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .navbar-text, .btn-logout {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-top: 0.5rem;
+            }
+
+            .nav-item {
+                margin: 0.3rem 0;
+            }
+
+            .nav-link {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+                width: 100%;
+            }
+
+            .navbar-text, .btn-logout {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: left;
+            }
+
+            .navbar-text {
+                justify-content: flex-start;
+            }
+
+            .btn-logout {
+                text-align: center;
             }
         }
 
         @media (max-width: 768px) {
             .navbar {
-                padding: 0.6rem 1rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+
+            .navbar-brand i {
+                font-size: 1.4rem;
             }
 
             .container {
-                margin: 0.8rem;
+                margin: 1rem;
             }
         }
 
@@ -130,42 +265,57 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{{ url_for('dashboard') }}"><i class="fas fa-capsules"></i> Quản lý cấp phát thuốc</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <div class="navbar-container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}" data-bs-toggle="tooltip" title="Trang chủ">
+            <i class="fas fa-capsules"></i> Quản lý cấp phát thuốc
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'prescriptions' %}active{% endif %}" href="">Cấp phát
-                        thuốc</a>
+                    <a class="nav-link {% if request.endpoint == 'prescriptions' %}active{% endif %}" href="}" data-bs-toggle="tooltip" title="Quản lý đơn thuốc">
+                        <i class="fas fa-prescription-bottle"></i> Cấp phát thuốc
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'patients' %}active{% endif %}"
-                       href="{{ url_for('patients') }}">Người mua thuốc</a>
+                    <a class="nav-link {% if request.endpoint == 'patients' %}active{% endif %}" href="{{ url_for('patients') }}" data-bs-toggle="tooltip" title="Quản lý khách hàng">
+                        <i class="fas fa-users"></i> Người mua thuốc
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.endpoint in ['medicine_batches', 'inventory_logs'] %}active{% endif %}" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" title="Quản lý kho và lịch sử">
+                        <i class="fas fa-warehouse"></i> Kho thuốc
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('medicine_batches') }}">Quản lý lô thuốc</a></li>
+                        {% if session.get('role') in ['admin'] %}
+                            <li><a class="dropdown-item" href="{{ url_for('inventory_logs') }}">Lịch sử kho</a></li>
+                        {% endif %}
+                    </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'medicines' %}active{% endif %}"
-                       href="{{ url_for('medicines') }}">Quản lý Thuốc</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'prescriptions' %}active{% endif %}" href="">Quản lý
-                        cấp phát</a>
+                    <a class="nav-link {% if request.endpoint == 'manage_prescriptions' %}active{% endif %}" href="" data-bs-toggle="tooltip" title="Quản lý đơn thuốc">
+                        <i class="fas fa-clipboard-list"></i> Quản lý cấp phát
+                    </a>
                 </li>
                 {% if session.get('role') in ['admin'] %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'users' %}active{% endif %}"
-                           href="{{ url_for('users') }}">Quản lý người dùng</a>
+                        <a class="nav-link {% if request.endpoint == 'users' %}active{% endif %}" href="{{ url_for('users') }}" data-bs-toggle="tooltip" title="Quản lý tài khoản người dùng">
+                            <i class="fas fa-user-cog"></i> Quản lý người dùng
+                        </a>
                     </li>
                 {% endif %}
             </ul>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center ms-auto">
                 {% if session.get('full_name') %}
-                    <span class="navbar-text me-3">
-                    Xin chào, {{ session.get('full_name') }}!
-                </span>
-                    <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Đăng xuất</a>
+                    <span class="navbar-text" data-bs-toggle="tooltip" title="Tên người dùng hiện tại">
+                        <i class="fas fa-user"></i> {{ session.get('full_name') }}
+                    </span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-logout" data-bs-toggle="tooltip" title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
                 {% endif %}
             </div>
         </div>
@@ -188,6 +338,15 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Enable tooltips
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

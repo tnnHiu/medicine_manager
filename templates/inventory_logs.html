@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý log kho thuốc{% endblock %}
+
+{% block extra_css %}
+    .search-bar {
+        max-width: 350px;
+    }
+
+    .search-bar .form-control {
+        border-radius: 20px 0 0 20px;
+        border: 1px solid var(--primary);
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+        transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .search-bar .form-control:focus {
+        box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+        border-color: var(--secondary);
+    }
+
+    .search-bar .btn-search {
+        border-radius: 0 20px 20px 0;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border: none;
+        font-size: 1.2rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .search-bar .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        background: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border-radius: 10px 10px 0 0;
+        padding: 1rem;
+    }
+
+    .table {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .table thead {
+        background: var(--primary);
+        color: var(--text-light);
+    }
+
+    .table tbody tr {
+        transition: background 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background: #f5faff;
+    }
+
+    @media (max-width: 768px) {
+        .search-bar {
+            max-width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+    }
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-clipboard-list me-2"></i>Log kho thuốc</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Danh sách log kho thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6 d-flex justify-content-end">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm log..."
+                               aria-label="Search" id="logSearchInput">
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="logTable">
+                    <thead>
+                    <tr>
+                        <th>Tên thuốc</th>
+                        <th>Mã lô</th>
+                        <th>Loại thay đổi</th>
+                        <th>Số lượng</th>
+                        <th>Người thực hiện</th>
+                        <th>Ngày thực hiện</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if logs %}
+                        {% for log in logs %}
+                            <tr>
+                                <td>{{ log.medicine.name if log.medicine else 'N/A' }}</td>
+                                <td>{{ log.batch.batch_number if log.batch else 'N/A' }}</td>
+                                <td>{{ 'Nhập' if log.change_type == 'import' else 'Xuất' }}</td>
+                                <td>{{ log.quantity }}</td>
+                                <td>{{ log.user.username if log.user else 'N/A' }}</td>
+                                <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ log.note or 'N/A' }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Không có dữ liệu</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logSearchInput').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('logTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let row of rows) {
+                const medicineName = row.cells[0].textContent.toLowerCase();
+                const batchNumber = row.cells[1].textContent.toLowerCase();
+                const username = row.cells[4].textContent.toLowerCase();
+                if (medicineName.includes(searchValue) || batchNumber.includes(searchValue) || username.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    </script>
+{% endblock %}

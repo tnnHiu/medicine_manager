@@ -1,0 +1,687 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý lô thuốc{% endblock %}
+
+{% block extra_css %}
+    .search-bar {
+        max-width: 350px;
+    }
+
+    .search-bar .form-control {
+        border-radius: 20px 0 0 20px;
+        border: 1px solid var(--primary);
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+        transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .search-bar .form-control:focus {
+        box-shadow: 0 0 10px rgba(30, 136, 229, 0.4);
+        border-color: var(--secondary);
+    }
+
+    .search-bar .btn-search {
+        border-radius: 0 20px 20px 0;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border: none;
+        font-size: 1.2rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .search-bar .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .btn-add-batch {
+        border-radius: 20px;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border: none;
+        font-size: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-add-batch:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .btn-add-batch i {
+        font-size: 1.2rem;
+    }
+
+    .btn-details {
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-details:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        background: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: var(--text-light);
+        border-radius: 10px 10px 0 0;
+        padding: 1rem;
+    }
+
+    .table {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .table thead {
+        background: var(--primary);
+        color: var(--text-light);
+    }
+
+    .table tbody tr {
+        transition: background 0.2s;
+    }
+
+    .table tbody tr:hover {
+        background: #f5faff;
+    }
+
+    .btn-action {
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+        background: var(--primary);
+        color: var(--text-light);
+        border-radius: 10px 10px 0 0;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .nested-table {
+        margin-top: 1rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 1rem;
+        display: none; /* Ẩn mặc định */
+    }
+
+    .medicine-item {
+        border: 1px solid #ddd;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+
+    .add-medicine-btn {
+        cursor: pointer;
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .remove-medicine-btn {
+        color: #dc3545;
+        cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+        .search-bar {
+            max-width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+
+        .btn-action, .btn-add-batch, .btn-details {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .btn-add-batch i, .btn-search i {
+            font-size: 1rem;
+        }
+    }
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-12">
+            <h2><i class="fas fa-boxes me-2"></i>Danh sách lô thuốc</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-list me-2"></i>Danh sách lô thuốc
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    {% if session.get('role') in ['admin', 'pharmacist'] %}
+                        <button type="button" class="btn btn-add-batch" data-bs-toggle="modal"
+                                data-bs-target="#addBatchModal">
+                            <i class="fas fa-plus me-2"></i>Thêm lô thuốc mới
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <form class="search-bar d-flex" onsubmit="return false;">
+                        <input class="form-control me-0" type="search" placeholder="Tìm kiếm lô thuốc..."
+                               aria-label="Search" id="batchSearchInput">
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Batch Modal -->
+            <div class="modal fade" id="addBatchModal" tabindex="-1" aria-labelledby="addBatchModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addBatchModalLabel">Thêm Lô Thuốc Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('add_medicine_batch') }}" method="POST">
+                                <h6>Thông tin lô thuốc</h6>
+                                <div class="mb-3">
+                                    <label for="addBatchNumber" class="form-label">Mã lô</label>
+                                    <input type="text" class="form-control" id="addBatchNumber" name="batch_number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addSupplier" class="form-label">Nhà cung cấp</label>
+                                    <input type="text" class="form-control" id="addSupplier" name="supplier">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addPurchaseDate" class="form-label">Ngày nhập</label>
+                                    <input type="date" class="form-control" id="addPurchaseDate" name="purchase_date">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addPurchasePrice" class="form-label">Giá nhập</label>
+                                    <input type="number" class="form-control" id="addPurchasePrice" name="purchase_price" step="0.01" min="0">
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="addIsActive" name="is_active" checked>
+                                    <label class="form-check-label" for="addIsActive">Hoạt động</label>
+                                </div>
+
+                                <h6>Thuốc trong lô</h6>
+                                <div id="medicine-items">
+                                    <div class="medicine-item">
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Tên thuốc</label>
+                                                <input type="text" class="form-control" name="medicine_name" required>
+                                            </div>
+                                            <div class="col-md-2 mb-3">
+                                                <label class="form-label">Đơn vị</label>
+                                                <input type="text" class="form-control" name="unit" placeholder="VD: viên, chai" required>
+                                            </div>
+                                            <div class="col-md-2 mb-3">
+                                                <label class="form-label">Số lượng</label>
+                                                <input type="number" class="form-control" name="quantity" min="1" required>
+                                            </div>
+                                            <div class="col-md-2 mb-3">
+                                                <label class="form-label">Ngày hết hạn</label>
+                                                <input type="date" class="form-control" name="expiration_date" required>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Ghi chú</label>
+                                                <textarea class="form-control" name="note" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="remove-medicine-btn"><i class="fas fa-trash"></i> Xóa</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="add-medicine-btn"><i class="fas fa-plus"></i> Thêm thuốc</span>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="batchTable">
+                    <thead>
+                    <tr>
+                        <th>Mã lô</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Ngày nhập</th>
+                        <th>Giá nhập</th>
+                        <th>Hoạt động</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if batches %}
+                        {% for batch in batches %}
+                            <tr>
+                                <td>{{ batch.batch_number }}</td>
+                                <td>{{ batch.supplier or '' }}</td>
+                                <td>{{ batch.purchase_date.strftime('%Y-%m-%d') if batch.purchase_date else 'N/A' }}</td>
+                                <td>{{ batch.purchase_price if batch.purchase_price is not none else 'N/A' }}</td>
+                                <td>{{ 'Có' if batch.is_active else 'Không' }}</td>
+                                <td>{{ batch.created_at.date() }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info btn-details"
+                                            data-batch-id="{{ batch.id }}">
+                                        Xem chi tiết
+                                    </button>
+                                    {% if session.get('role') in ['admin', 'pharmacist'] %}
+                                        <button type="button" class="btn btn-sm btn-warning btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editBatchModal{{ batch.id }}">
+                                            Sửa
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteBatchModal{{ batch.id }}">
+                                            Xóa
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-primary btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addBatchItemModal{{ batch.id }}">
+                                            Thêm thuốc
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <!-- Nested table for batch items -->
+                            <tr id="batch-items-{{ batch.id }}" class="nested-table-row">
+                                <td colspan="7">
+                                    <div class="nested-table">
+                                        <h6>Thuốc trong lô</h6>
+                                        <form class="search-bar d-flex mb-3" onsubmit="return false;">
+                                            <input class="form-control me-0" type="search" placeholder="Tìm kiếm thuốc..."
+                                                   aria-label="Search" id="itemSearchInput{{ batch.id }}">
+                                            <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                                        </form>
+                                        <table class="table table-hover" id="batchItemTable{{ batch.id }}">
+                                            <thead>
+                                            <tr>
+                                                <th>Tên thuốc</th>
+                                                <th>Mã thuốc</th>
+                                                <th>Đơn vị</th>
+                                                <th>Số lượng</th>
+                                                <th>Ngày hết hạn</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for item in batch.batch_items %}
+                                                <tr>
+                                                    <td>{{ item.medicine.name }}</td>
+                                                    <td>{{ item.medicine.code }}</td>
+                                                    <td>{{ item.medicine.unit }}</td>
+                                                    <td>{{ item.quantity }}</td>
+                                                    <td>{{ item.expiration_date.strftime('%Y-%m-%d') }}</td>
+                                                    <td>
+                                                        {% if session.get('role') in ['admin', 'pharmacist'] %}
+                                                            <button type="button" class="btn btn-sm btn-warning btn-action"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editBatchItemModal{{ item.id }}">
+                                                                Sửa
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-danger btn-action"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteBatchItemModal{{ item.id }}">
+                                                                Xóa
+                                                            </button>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                <!-- Edit Batch Item Modal -->
+                                                <div class="modal fade" id="editBatchItemModal{{ item.id }}" tabindex="-1"
+                                                     aria-labelledby="editBatchItemModalLabel{{ item.id }}"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editBatchItemModalLabel{{ item.id }}">Sửa Thuốc Trong Lô</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form action="{{ url_for('edit_batch_item', batch_id=batch.id, item_id=item.id) }}" method="POST">
+                                                                    <div class="mb-3">
+                                                                        <label for="editQuantity{{ item.id }}" class="form-label">Số lượng</label>
+                                                                        <input type="number" class="form-control" id="editQuantity{{ item.id }}"
+                                                                               name="quantity" value="{{ item.quantity }}" min="1" required>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpirationDate{{ item.id }}" class="form-label">Ngày hết hạn</label>
+                                                                        <input type="date" class="form-control" id="editExpirationDate{{ item.id }}"
+                                                                               name="expiration_date" value="{{ item.expiration_date.strftime('%Y-%m-%d') }}" required>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                                data-bs-dismiss="modal">Hủy</button>
+                                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Delete Batch Item Modal -->
+                                                <div class="modal fade" id="deleteBatchItemModal{{ item.id }}" tabindex="-1"
+                                                     aria-labelledby="deleteBatchItemModalLabel{{ item.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteBatchItemModalLabel{{ item.id }}">Xác nhận xóa</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Bạn có chắc chắn muốn xóa thuốc <strong>{{ item.medicine.name }}</strong> khỏi lô?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Hủy</button>
+                                                                <form action="{{ url_for('delete_batch_item', batch_id=batch.id, item_id=item.id) }}" method="POST">
+                                                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Edit Batch Modal -->
+                            <div class="modal fade" id="editBatchModal{{ batch.id }}" tabindex="-1"
+                                 aria-labelledby="editBatchModalLabel{{ batch.id }}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editBatchModalLabel{{ batch.id }}">Sửa Lô Thuốc</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url_for('edit_medicine_batch', batch_id=batch.id) }}" method="POST">
+                                                <div class="mb-3">
+                                                    <label for="editBatchNumber{{ batch.id }}" class="form-label">Mã lô</label>
+                                                    <input type="text" class="form-control" id="editBatchNumber{{ batch.id }}"
+                                                           name="batch_number" value="{{ batch.batch_number }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editSupplier{{ batch.id }}" class="form-label">Nhà cung cấp</label>
+                                                    <input type="text" class="form-control" id="editSupplier{{ batch.id }}"
+                                                           name="supplier" value="{{ batch.supplier or '' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editPurchaseDate{{ batch.id }}" class="form-label">Ngày nhập</label>
+                                                    <input type="date" class="form-control" id="editPurchaseDate{{ batch.id }}"
+                                                           name="purchase_date" value="{{ batch.purchase_date.strftime('%Y-%m-%d') if batch.purchase_date else '' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editPurchasePrice{{ batch.id }}" class="form-label">Giá nhập</label>
+                                                    <input type="number" class="form-control" id="editPurchasePrice{{ batch.id }}"
+                                                           name="purchase_price" value="{{ batch.purchase_price if batch.purchase_price is not none else '' }}"
+                                                           step="0.01" min="0">
+                                                </div>
+                                                <div class="mb-3 form-check">
+                                                    <input type="checkbox" class="form-check-input" id="editIsActive{{ batch.id }}"
+                                                           name="is_active" {% if batch.is_active %}checked{% endif %}>
+                                                    <label class="form-check-label" for="editIsActive{{ batch.id }}">Hoạt động</label>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Delete Batch Modal -->
+                            <div class="modal fade" id="deleteBatchModal{{ batch.id }}" tabindex="-1"
+                                 aria-labelledby="deleteBatchModalLabel{{ batch.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteBatchModalLabel{{ batch.id }}">Xác nhận xóa</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn muốn xóa lô thuốc <strong>{{ batch.batch_number }}</strong>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Hủy</button>
+                                            <form action="{{ url_for('delete_medicine_batch', batch_id=batch.id) }}" method="POST">
+                                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Add Batch Item Modal -->
+                            <div class="modal fade" id="addBatchItemModal{{ batch.id }}" tabindex="-1"
+                                 aria-labelledby="addBatchItemModalLabel{{ batch.id }}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addBatchItemModalLabel{{ batch.id }}">Thêm Thuốc Vào Lô {{ batch.batch_number }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ url_for('add_batch_item', batch_id=batch.id) }}" method="POST">
+                                                <div class="mb-3">
+                                                    <label for="addMedicine{{ batch.id }}" class="form-label">Tên thuốc</label>
+                                                    <input type="text" class="form-control" id="addMedicine{{ batch.id }}" name="medicine_name" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="addUnit{{ batch.id }}" class="form-label">Đơn vị</label>
+                                                    <input type="text" class="form-control" id="addUnit{{ batch.id }}" name="unit" placeholder="VD: viên, chai" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="addQuantity{{ batch.id }}" class="form-label">Số lượng</label>
+                                                    <input type="number" class="form-control" id="addQuantity{{ batch.id }}"
+                                                           name="quantity" min="1" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="addExpirationDate{{ batch.id }}" class="form-label">Ngày hết hạn</label>
+                                                    <input type="date" class="form-control" id="addExpirationDate{{ batch.id }}"
+                                                           name="expiration_date" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="addNote{{ batch.id }}" class="form-label">Ghi chú</label>
+                                                    <textarea class="form-control" id="addNote{{ batch.id }}" name="note" rows="4"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Không có dữ liệu</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tìm kiếm lô thuốc
+        document.getElementById('batchSearchInput').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('batchTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                // Chỉ xử lý các hàng lô thuốc (không phải hàng bảng lồng)
+                if (!rows[i].classList.contains('nested-table-row')) {
+                    const batchNumber = rows[i].cells[0].textContent.toLowerCase();
+                    const supplier = rows[i].cells[1].textContent.toLowerCase();
+                    if (batchNumber.includes(searchValue) || supplier.includes(searchValue)) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                        // Ẩn bảng lồng nếu có
+                        if (i + 1 < rows.length && rows[i + 1].classList.contains('nested-table-row')) {
+                            rows[i + 1].style.display = 'none';
+                        }
+                    }
+                }
+            }
+        });
+
+        // Tìm kiếm thuốc trong lô
+        document.querySelectorAll('[id^="itemSearchInput"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const searchValue = this.value.toLowerCase();
+                const batchId = this.id.replace('itemSearchInput', '');
+                const table = document.getElementById('batchItemTable' + batchId);
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                for (let row of rows) {
+                    const medicineName = row.cells[0].textContent.toLowerCase();
+                    const medicineCode = row.cells[1].textContent.toLowerCase();
+                    const unit = row.cells[2].textContent.toLowerCase();
+                    if (medicineName.includes(searchValue) || medicineCode.includes(searchValue) || unit.includes(searchValue)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Toggle hiển thị bảng thuốc trong lô
+        document.querySelectorAll('.btn-details').forEach(button => {
+            button.addEventListener('click', function() {
+                const batchId = this.getAttribute('data-batch-id');
+                const nestedTable = document.getElementById('batch-items-' + batchId);
+                const isVisible = nestedTable.querySelector('.nested-table').style.display === 'block';
+
+                // Toggle hiển thị
+                nestedTable.querySelector('.nested-table').style.display = isVisible ? 'none' : 'block';
+                this.textContent = isVisible ? 'Xem chi tiết' : 'Ẩn chi tiết';
+            });
+        });
+
+        // Thêm/xóa thuốc trong form thêm lô
+        document.addEventListener('DOMContentLoaded', function() {
+            const medicineItems = document.getElementById('medicine-items');
+            const addMedicineBtn = document.querySelector('.add-medicine-btn');
+
+            addMedicineBtn.addEventListener('click', function() {
+                const newItem = document.createElement('div');
+                newItem.classList.add('medicine-item');
+                newItem.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Tên thuốc</label>
+                            <input type="text" class="form-control" name="medicine_name" required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Đơn vị</label>
+                            <input type="text" class="form-control" name="unit" placeholder="VD: viên, chai" required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Số lượng</label>
+                            <input type="number" class="form-control" name="quantity" min="1" required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Ngày hết hạn</label>
+                            <input type="date" class="form-control" name="expiration_date" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" name="note" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="remove-medicine-btn"><i class="fas fa-trash"></i> Xóa</span>
+                    </div>
+                `;
+                medicineItems.appendChild(newItem);
+
+                // Thêm sự kiện xóa cho nút xóa mới
+                newItem.querySelector('.remove-medicine-btn').addEventListener('click', function() {
+                    newItem.remove();
+                });
+            });
+
+            // Sự kiện xóa cho các mục thuốc hiện có
+            medicineItems.querySelectorAll('.remove-medicine-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    btn.closest('.medicine-item').remove();
+                });
+            });
+        });
+    </script>
+{% endblock %}

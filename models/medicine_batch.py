@@ -1,5 +1,6 @@
 from extensions import db
 
+
 # Thông tin lô thuốc
 class MedicineBatch(db.Model):
     __tablename__ = 'medicine_batches'
@@ -11,5 +12,4 @@ class MedicineBatch(db.Model):
     purchase_price = db.Column(db.Float)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     is_active = db.Column(db.Boolean, default=True)
-
     batch_items = db.relationship('MedicineBatchItem', backref='batch', cascade='all, delete-orphan')

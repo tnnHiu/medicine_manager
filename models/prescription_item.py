@@ -2,7 +2,6 @@ from extensions import db
 
 
 # Thuốc - Đơn thuốc
-
 class PrescriptionItem(db.Model):
     __tablename__ = 'prescription_items'
 

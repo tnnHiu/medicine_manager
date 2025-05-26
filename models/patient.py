@@ -3,14 +3,12 @@ from extensions import db
 import enum
 
 # Bệnh nhân
-
 class GenderEnum(enum.Enum):
     M = "M"
     F = "F"
 
 class Patient(db.Model):
     __tablename__ = 'patients'
-
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(100))
     id_card = db.Column(db.String(12), unique=True, nullable=False)

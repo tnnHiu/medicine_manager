@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 db.init_app(app)
-# migrate = Migrate(app, db)
 
 with app.app_context():
     db.create_all()

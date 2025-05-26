@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Hệ thống Quản lý Thuốc{% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" defer>
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"
+          defer>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" defer>
@@ -17,6 +18,10 @@
             --bg-dark: #d6eaff;
             --text-light: #fff;
             --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --success: #28a745;
+            --error: #dc3545;
+            --text-dark: #1a202c;
+            --text-muted: #6b7280;
         }
 
         body {
@@ -33,16 +38,14 @@
         .navbar {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             box-shadow: var(--shadow);
-            padding: 0.6rem 1rem;
+            padding: 0.75rem 1rem;
             position: sticky;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .navbar-container {
             max-width: 1400px;
-            width: 100%;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -52,39 +55,24 @@
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
+            color: var(--text-light);
             display: flex;
             align-items: center;
-            color: var(--text-light) !important;
-            transition: transform 0.3s ease;
-            white-space: nowrap;
+            transition: transform 0.2s ease;
         }
 
         .navbar-brand:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .navbar-brand i {
             margin-right: 0.5rem;
             font-size: 1.6rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.15);
-            }
-            100% {
-                transform: scale(1);
-            }
         }
 
         .navbar-nav {
             display: flex;
             align-items: center;
-            flex-wrap: nowrap;
             margin: 0;
         }
 
@@ -93,34 +81,19 @@
         }
 
         .nav-link {
-            color: var(--text-light) !important;
+            color: var(--text-light);
             font-weight: 500;
             font-size: 0.95rem;
-            padding: 0.5rem 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 6px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            white-space: nowrap;
-        }
-
-        .nav-link i {
-            margin-right: 0.3rem;
-            font-size: 1rem;
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .nav-link .badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            font-size: 0.6rem;
-            background-color: #e91e63;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
         }
 
         .dropdown-menu {
@@ -128,15 +101,14 @@
             border: none;
             border-radius: 8px;
             box-shadow: var(--shadow);
-            margin-top: 0.4rem;
-            min-width: 200px;
+            margin-top: 0.5rem;
         }
 
         .dropdown-item {
-            color: var(--secondary);
+            color: var(--text-dark);
             font-weight: 500;
             padding: 0.5rem 1.2rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .dropdown-item:hover {
@@ -148,61 +120,36 @@
             color: var(--text-light);
             font-weight: 500;
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            margin-right: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .navbar-text i {
-            margin-right: 0.3rem;
-            font-size: 1rem;
+            margin-right: 1rem;
         }
 
         .btn-logout {
             border-radius: 20px;
-            padding: 0.4rem 0.8rem;
+            padding: 0.5rem 1rem;
             background: var(--text-light);
             color: var(--secondary);
             font-weight: 500;
             font-size: 0.9rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            transition: all 0.2s ease;
         }
 
         .btn-logout:hover {
             background: #f5f5f5;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-logout i {
-            margin-right: 0.3rem;
-            font-size: 1rem;
-        }
-
-        .navbar-toggler {
-            border: none;
-            color: var(--text-light);
-            padding: 0.4rem;
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            transform: translateY(-1px);
         }
 
         /* Container Styles */
         .container {
             max-width: 1400px;
-            margin: 2rem auto;
-            animation: fadeIn 0.5s ease-in-out;
+            margin: 1.5rem auto;
             flex: 1;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
@@ -218,18 +165,30 @@
             font-size: 0.9rem;
             box-shadow: var(--shadow);
             position: relative;
+            animation: slideIn 0.3s ease;
         }
 
         .alert-success {
             background: #d4edda;
             color: #155724;
-            border-left: 4px solid #28a745;
+            border-left: 4px solid var(--success);
         }
 
         .alert-error {
             background: #f8d7da;
             color: #721c24;
-            border-left: 4px solid #dc3545;
+            border-left: 4px solid var(--error);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* Footer Styles */
@@ -243,41 +202,7 @@
             margin-top: auto;
         }
 
-        footer p {
-            margin: 0;
-        }
-
-        footer a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
         /* Responsive Styles */
-        @media (max-width: 1200px) {
-            .navbar-container {
-                max-width: 100%;
-                padding: 0 1rem;
-            }
-
-            .nav-link {
-                font-size: 0.9rem;
-                padding: 0.4rem 0.6rem;
-            }
-
-            .navbar-text, .btn-logout {
-                font-size: 0.85rem;
-            }
-
-            .nav-item {
-                margin: 0 0.3rem;
-            }
-        }
-
         @media (max-width: 992px) {
             .navbar-nav {
                 flex-direction: column;
@@ -300,40 +225,16 @@
                 width: 100%;
                 text-align: left;
             }
-
-            .navbar-text {
-                justify-content: flex-start;
-            }
-
-            .btn-logout {
-                text-align: center;
-            }
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 0.5rem 0.8rem;
-            }
-
             .navbar-brand {
                 font-size: 1.3rem;
             }
 
-            .navbar-brand i {
-                font-size: 1.4rem;
-            }
-
             .container {
                 margin: 1rem;
-            }
-
-            .nav-item {
-                margin: 0.2rem 0;
-            }
-
-            .nav-link {
-                font-size: 0.95rem;
-                padding: 0.5rem 0.8rem;
+                padding: 0 0.5rem;
             }
         }
 
@@ -343,7 +244,7 @@
 <body>
 <nav class="navbar navbar-expand-lg">
     <div class="navbar-container">
-        <a class="navbar-brand" href="{{ url_for('dashboard') }}" data-bs-toggle="tooltip" title="Trang chủ">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}" aria-label="Trang chủ">
             <i class="fas fa-capsules"></i> Quản lý cấp phát thuốc
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -355,8 +256,7 @@
                 {% if session.get('role') in ['admin', 'pharmacist', 'doctor'] %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint in ['prescriptions', 'add_prescription'] %}active{% endif %}"
-                           href="{{ url_for('prescriptions') }}"
-                           data-bs-toggle="tooltip" title="Quản lý đơn thuốc">
+                           href="{{ url_for('prescriptions') }}" aria-label="Quản lý đơn thuốc">
                             <i class="fas fa-prescription-bottle"></i> Đơn thuốc
                         </a>
                     </li>
@@ -364,7 +264,7 @@
                 {% if session.get('role') in ['admin', 'doctor'] %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'patients' %}active{% endif %}"
-                           href="{{ url_for('patients') }}" data-bs-toggle="tooltip" title="Quản lý bệnh nhân">
+                           href="{{ url_for('patients') }}" aria-label="Quản lý bệnh nhân">
                             <i class="fas fa-users"></i> Bệnh nhân
                         </a>
                     </li>
@@ -373,12 +273,13 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {% if request.endpoint in ['medicines', 'medicine_batches', 'inventory_logs', 'medicine_batch_items', 'add_medicine_batch'] %}active{% endif %}"
                            href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                           data-bs-toggle="tooltip" title="Quản lý kho">
+                           aria-label="Quản lý kho">
                             <i class="fas fa-warehouse"></i> Kho thuốc
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('medicines') }}">Quản lý thuốc</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('medicine_batches') }}">Quản lý lô thuốc</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('medicine_batches') }}">Quản lý lô thuốc</a>
+                            </li>
                             {% if session.get('role') == 'admin' %}
                                 <li><a class="dropdown-item" href="{{ url_for('inventory_logs') }}">Lịch sử kho</a></li>
                             {% endif %}
@@ -388,7 +289,7 @@
                 {% if session.get('role') == 'admin' %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'users' %}active{% endif %}"
-                           href="{{ url_for('users') }}" data-bs-toggle="tooltip" title="Quản lý tài khoản người dùng">
+                           href="{{ url_for('users') }}" aria-label="Quản lý tài khoản người dùng">
                             <i class="fas fa-user-cog"></i> Quản lý người dùng
                         </a>
                     </li>
@@ -396,10 +297,10 @@
             </ul>
             <div class="d-flex align-items-center ms-auto">
                 {% if session.get('full_name') %}
-                    <span class="navbar-text" data-bs-toggle="tooltip" title="Tên người dùng hiện tại">
+                    <span class="navbar-text" aria-label="Tên người dùng hiện tại">
                         <i class="fas fa-user"></i> {{ session.get('full_name') }}
                     </span>
-                    <a href="{{ url_for('logout') }}" class="btn btn-logout" data-bs-toggle="tooltip" title="Đăng xuất">
+                    <a href="{{ url_for('logout') }}" class="btn btn-logout" aria-label="Đăng xuất">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
                     </a>
                 {% endif %}
@@ -423,11 +324,14 @@
     {% block content %}{% endblock %}
 </div>
 
+<footer>
+    <p>&copy; 2025 Hệ thống Quản lý Thuốc. <a href="#">Liên hệ</a></p>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"
         defer></script>
 <script>
-    // Enable tooltips
     document.addEventListener('DOMContentLoaded', function () {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipTriggerList.forEach(tooltipEl => new bootstrap.Tooltip(tooltipEl));

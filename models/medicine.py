@@ -1,7 +1,6 @@
 from extensions import db
 
 # Thông tin thuốc
-
 class Medicine(db.Model):
     __tablename__ = 'medicines'
 

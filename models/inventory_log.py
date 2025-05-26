@@ -1,8 +1,6 @@
 from extensions import db
 
-
 # Log của kho thuốc
-
 class InventoryLog(db.Model):
     __tablename__ = 'inventory_logs'
 

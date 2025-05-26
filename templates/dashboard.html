@@ -3,303 +3,146 @@
 {% block title %}Trang chủ - Hệ thống Quản lý Thuốc{% endblock %}
 
 {% block extra_css %}
-    /* Card Styles */
-    .dashboard-card {
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    background: white;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease;
-    }
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .widget {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
 
-    .dashboard-card:hover {
-    transform: translateY(-5px);
-    }
+        .widget:hover {
+            transform: translateY(-5px);
+        }
 
-    .card-header {
-    background: linear-gradient(90deg, #1e88e5, #1565c0);
-    color: white;
-    border-radius: 15px 15px 0 0;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    }
+        .widget i {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            transition: transform 0.3s ease;
+        }
 
-    .card-header i {
-    margin-right: 0.5rem;
-    }
+        .widget:hover i {
+            transform: scale(1.2);
+        }
 
-    .card-body {
-    padding: 2rem;
-    }
+        .widget h6 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
 
-    /* Widget Styles */
-    .widget {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    text-align: center;
-    }
+        .widget p {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
 
-    .widget:hover {
-    transform: translateY(-5px);
-    }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
 
-    .widget i {
-    font-size: 2.5rem;
-    color: #1e88e5;
-    margin-bottom: 0.8rem;
-    transition: transform 0.3s ease;
-    }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+        }
 
-    .widget:hover i {
-    transform: scale(1.2);
-    }
-
-    .widget h6 {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-    }
-
-    .widget p {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #1e88e5;
-    }
-
-    /* Table Styles */
-    .table {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .table thead {
-    background: #1e88e5;
-    color: white;
-    }
-
-    .table tbody tr {
-    transition: background 0.2s ease;
-    }
-
-    .table tbody tr:hover {
-    background: #f0f7ff;
-    }
-
-    /* Action Buttons */
-    .btn-action {
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    }
-
-    .btn-action:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Chart Styles */
-    .chart-container {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
+        .chart-placeholder {
+            text-align: center;
+            color: #888;
+            padding: 2rem;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <!-- Widget Section -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="widget">
-                <i class="fas fa-users"></i>
-                <h6>Tổng số Bệnh nhân</h6>
-                <p>150</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="widget">
-                <i class="fas fa-capsules"></i>
-                <h6>Thuốc trong kho</h6>
-                <p>320</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="widget">
-                <i class="fas fa-file-prescription"></i>
-                <h6>Đơn thuốc hôm nay</h6>
-                <p>45</p>
-            </div>
-        </div>
-    </div>
+    <div class="container mx-auto px-4 py-8">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-    <!-- Chart Section -->
-    <div class="row mb-4">
-        <div class="col-md-6">
+        <!-- Widget Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="widget">
+                <i class="fas fa-users text-blue-500"></i>
+                <h6 class="font-semibold">Tổng số Bệnh nhân</h6>
+                <p class="text-blue-500">{{ total_patients }}</p>
+            </div>
+            <div class="widget">
+                <i class="fas fa-capsules text-blue-500"></i>
+                <h6 class="font-semibold">Thuốc trong kho</h6>
+                <p class="text-blue-500">{{ total_medicines }}</p>
+            </div>
+            <div class="widget">
+                <i class="fas fa-file-prescription text-blue-500"></i>
+                <h6 class="font-semibold">Đơn thuốc hôm nay</h6>
+                <p class="text-blue-500">{{ today_prescriptions }}</p>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="chart-container">
-                <canvas id="prescriptionChart"></canvas>
+                <h5 class="text-center font-semibold mb-3">Số đơn thuốc theo ngày</h5>
+                {% if prescription_trend %}
+                    <img src="{{ prescription_trend }}" alt="Biểu đồ số đơn thuốc">
+                {% else %}
+                    <div class="chart-placeholder">Không có dữ liệu để hiển thị</div>
+                {% endif %}
             </div>
-        </div>
-        <div class="col-md-6">
             <div class="chart-container">
-                <canvas id="medicineChart"></canvas>
+                <h5 class="text-center font-semibold mb-3">Tỷ lệ đơn chưa hoàn thành</h5>
+                {% if pending_ratio %}
+                    <img src="{{ pending_ratio }}" alt="Biểu đồ tỷ lệ đơn chưa hoàn thành">
+                {% else %}
+                    <div class="chart-placeholder">Không có dữ liệu để hiển thị</div>
+                {% endif %}
+            </div>
+            <div class="chart-container">
+                <h5 class="text-center font-semibold mb-3">Tồn kho top 5 thuốc</h5>
+                {% if stock_levels %}
+                    <img src="{{ stock_levels }}" alt="Biểu đồ tồn kho thuốc">
+                {% else %}
+                    <div class="chart-placeholder">Không có dữ liệu để hiển thị</div>
+                {% endif %}
+            </div>
+            <div class="chart-container">
+                <h5 class="text-center font-semibold mb-3">Top 5 thuốc được kê đơn</h5>
+                {% if top_medicines_chart %}
+                    <img src="{{ top_medicines_chart }}" alt="Biểu đồ top thuốc kê đơn">
+                {% else %}
+                    <div class="chart-placeholder">Không có dữ liệu để hiển thị</div>
+                {% endif %}
+            </div>
+            <div class="chart-container">
+                <h5 class="text-center font-semibold mb-3">Phân bố trạng thái đơn thuốc</h5>
+                {% if status_distribution %}
+                    <img src="{{ status_distribution }}" alt="Biểu đồ trạng thái đơn thuốc">
+                {% else %}
+                    <div class="chart-placeholder">Không có dữ liệu để hiển thị</div>
+                {% endif %}
+            </div>
+            <div class="chart-container">
+                <h5 class="text-center font-semibold mb-3">Top 5 thuốc sắp hết hạn (30 ngày)</h5>
+                {% if expiring_medicines %}
+                    <img src="{{ expiring_medicines }}" alt="Biểu đồ thuốc sắp hết hạn">
+                {% else %}
+                    <div class="chart-placeholder">Không có thuốc nào sắp hết hạn</div>
+                {% endif %}
             </div>
         </div>
     </div>
-
-    <!-- Table Section -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card dashboard-card">
-                <div class="card-header">
-                    <i class="fas fa-list me-2"></i> Danh sách Bệnh nhân gần đây
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Tên Bệnh nhân</th>
-                            <th scope="col">Tuổi</th>
-                            <th scope="col">Đơn thuốc gần nhất</th>
-                            <th scope="col">Hành động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>35</td>
-                            <td>2025-05-23</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary btn-action">Xem</button>
-                                <button class="btn btn-sm btn-warning btn-action">Sửa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td>Trần Thị B</td>
-                            <td>28</td>
-                            <td>2025-05-22</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary btn-action">Xem</button>
-                                <button class="btn btn-sm btn-warning btn-action">Sửa</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal for Adding Patient -->
-    <div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPatientModalLabel">Thêm Bệnh nhân</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="patientName" class="form-label">Tên Bệnh nhân</label>
-                            <input type="text" class="form-control" id="patientName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="patientAge" class="form-label">Tuổi</label>
-                            <input type="number" class="form-control" id="patientAge" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary">Lưu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal for Adding Prescription -->
-    <div class="modal fade" id="addPrescriptionModal" tabindex="-1" aria-labelledby="addPrescriptionModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPrescriptionModalLabel">Cấp phát Thuốc</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="patientId" class="form-label">ID Bệnh nhân</label>
-                            <input type="text" class="form-control" id="patientId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="medicine" class="form-label">Tên Thuốc</label>
-                            <input type="text" class="form-control" id="medicine" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary">Lưu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block scripts %}
-    <script>
-        // Chart.js for Prescription Chart
-        const ctx1 = document.getElementById('prescriptionChart').getContext('2d');
-        new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6'],
-                datasets: [{
-                    label: 'Đơn thuốc',
-                    data: [12, 19, 3, 5, 2],
-                    backgroundColor: 'rgba(30, 136, 229, 0.6)',
-                    borderColor: 'rgba(30, 136, 229, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Chart.js for Medicine Chart
-        const ctx2 = document.getElementById('medicineChart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'doughnut',
-            data: {
-                labels: ['Paracetamol', 'Amoxicillin', 'Ibuprofen', 'Others'],
-                datasets: [{
-                    label: 'Thuốc trong kho',
-                    data: [120, 80, 60, 40],
-                    backgroundColor: [
-                        'rgba(30, 136, 229, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(75, 192, 192, 0.6)'
-                    ]
-                }]
-            }
-        });
-    </script>
 {% endblock %}

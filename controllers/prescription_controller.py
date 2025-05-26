@@ -116,7 +116,6 @@ def register_prescription_routes(app):
                         db.session.rollback()
                         return redirect(url_for('add_prescription'))
 
-                    # Lấy các lô hoạt động, chưa hết hạn, sắp xếp theo created_at ASC
                     batch_items = MedicineBatchItem.query.join(MedicineBatch).filter(
                         MedicineBatchItem.medicine_id == medicine_id,
                         MedicineBatchItem.quantity > 0,
@@ -134,7 +133,6 @@ def register_prescription_routes(app):
                     logger.debug(
                         f"Available batches for Medicine ID {medicine_id}: {[(b.batch_id, b.quantity, b.batch.batch_number) for b in batch_items]}")
 
-                    # Trừ kho từ lô cũ nhất
                     remaining_quantity = quantity
                     allocated_batches = []
                     for batch_item in batch_items:
@@ -148,11 +146,10 @@ def register_prescription_routes(app):
                         logger.debug(
                             f"Batch {batch_item.batch_id} ({batch_item.batch.batch_number}): Reduced {available_quantity}, now {batch_item.quantity}")
 
-                        # Ghi log trừ kho
                         log = InventoryLog(
                             medicine_id=medicine_id,
                             batch_id=batch_item.batch_id,
-                            change_type='dispense',  # Sửa thành 'dispense'
+                            change_type='dispense',
                             quantity=-available_quantity,
                             performed_by=session.get('user_id'),
                             note=f'Tạo đơn thuốc ID {new_prescription.id} cho {patient.full_name}: {medicine.name or "ID " + str(medicine_id)} ({available_quantity} {medicine.unit or "N/A"}) từ lô {batch_item.batch.batch_number}'
@@ -165,12 +162,10 @@ def register_prescription_routes(app):
                             'error')
                         db.session.rollback()
                         return redirect(url_for('add_prescription'))
-
-                    # Gán batch_id của lô cũ nhất
                     new_item = PrescriptionItem(
                         prescription_id=new_prescription.id,
                         medicine_id=medicine_id,
-                        batch_id=allocated_batches[0][0],  # Lô cũ nhất
+                        batch_id=allocated_batches[0][0],
                         dosage=dosage,
                         frequency=frequency,
                         duration=duration,
@@ -188,7 +183,7 @@ def register_prescription_routes(app):
 
         try:
             patients = Patient.query.all()
-            # Subquery để tính tổng tồn kho
+
             stock_subquery = db.session.query(
                 MedicineBatchItem.medicine_id,
                 func.coalesce(func.sum(MedicineBatchItem.quantity), 0).label('total_stock')
@@ -201,7 +196,6 @@ def register_prescription_routes(app):
                 MedicineBatchItem.expiration_date > datetime.now().date()
             ).group_by(MedicineBatchItem.medicine_id).subquery()
 
-            # Lấy danh sách thuốc với tồn kho
             available_medicines = db.session.query(
                 Medicine.id,
                 Medicine.name,
@@ -212,7 +206,6 @@ def register_prescription_routes(app):
                 Medicine.id == stock_subquery.c.medicine_id
             ).all()
 
-            # Chuyển thành list of dict
             available_medicines = [
                 {
                     'id': med.id,
@@ -239,7 +232,6 @@ def register_prescription_routes(app):
                 flash('Đơn thuốc đã được xử lý hoặc hủy!', 'error')
                 return redirect(url_for('prescriptions'))
 
-            # Không trừ kho vì đã trừ khi tạo đơn, chỉ ghi log cấp phát
             for item in prescription.items:
                 medicine = Medicine.query.get(item.medicine_id)
                 if not medicine:
@@ -250,7 +242,7 @@ def register_prescription_routes(app):
                 log = InventoryLog(
                     medicine_id=item.medicine_id,
                     batch_id=item.batch_id,
-                    change_type='dispense',  # Sửa thành 'dispense'
+                    change_type='dispense',
                     quantity=0,
                     performed_by=session.get('user_id'),
                     note=f'Cấp phát thuốc {medicine.name or "ID " + str(item.medicine_id)} ({item.quantity} {medicine.unit or "N/A"}) cho {prescription.patient.full_name if prescription.patient else "N/A"} từ lô {batch.batch_number if batch else "N/A"}'
@@ -276,7 +268,6 @@ def register_prescription_routes(app):
                 flash('Chỉ có thể hủy cấp phát cho đơn thuốc đang chờ cấp phát!', 'error')
                 return redirect(url_for('prescriptions'))
 
-            # Hoàn lại số lượng thuốc
             for item in prescription.items:
                 batch_item = MedicineBatchItem.query.filter_by(
                     batch_id=item.batch_id,

@@ -76,8 +76,3 @@ def register_auth_routes(app):
         session.clear()
         flash('Bạn đã đăng xuất thành công', 'success')
         return redirect(url_for('login'))
-
-    @app.route('/')
-    @login_required
-    def dashboard():
-        return render_template('dashboard.html')

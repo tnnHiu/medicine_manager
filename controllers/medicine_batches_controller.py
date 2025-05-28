@@ -7,7 +7,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-
 def register_medicine_batch_routes(app):
     @app.route('/medicine/search', methods=['GET'])
     @login_required

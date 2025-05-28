@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Quản lý người lấy thuốc{% endblock %}
+{% block title %}Quản lý Bệnh nhân{% endblock %}
 
 {% block extra_css %}
     <style>
@@ -166,13 +166,13 @@
 
     <div class="row mb-3 align-items-center">
         <div class="col-md-12">
-            <h2><i class="fas fa-users me-2"></i>Danh sách người lấy thuốc</h2>
+            <h2><i class="fas fa-users me-2"></i>Danh sách Bệnh nhân</h2>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-list me-2"></i>Danh sách người lấy thuốc
+            <i class="fas fa-list me-2"></i>Danh sách Bệnh nhân
         </div>
         <div class="card-body">
             <div class="row mb-3 align-items-center">
@@ -180,7 +180,7 @@
                     {% if session.get('role') in ['admin', 'pharmacist'] %}
                         <button type="button" class="btn btn-add-patient" data-bs-toggle="modal"
                                 data-bs-target="#addPatientModal">
-                            <i class="fas fa-plus me-2"></i>Thêm người lấy thuốc mới
+                            <i class="fas fa-plus me-2"></i>Thêm Bệnh nhân mới
                         </button>
                     {% endif %}
                 </div>
@@ -199,7 +199,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPatientModalLabel">Thêm Người Lấy Thuốc Mới</h5>
+                            <h5 class="modal-title" id="addPatientModalLabel">Thêm Bệnh nhân Mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -246,7 +246,7 @@
                 <table class="table table-hover" id="patientTable">
                     <thead>
                     <tr>
-                        <th>Tên người lấy</th>
+                        <th>Tên Bệnh nhân</th>
                         <th>Số căn cước</th>
                         <th>Số điện thoại</th>
                         <th>Ngày nhập</th>

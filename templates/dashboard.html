@@ -3,245 +3,229 @@
 {% block title %}Trang chủ - Hệ thống Quản lý Thuốc{% endblock %}
 
 {% block extra_css %}
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<style>
-    .dashboard-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .section-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--primary);
-        display: inline-block;
-    }
-
-    .widget {
-        background: var(--text-light);
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow);
-        transition: all 0.2s ease;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .widget:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .widget i {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        color: var(--primary);
-    }
-
-    .widget h6 {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-    }
-
-    .widget p {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-dark);
-    }
-
-    .chart-container {
-        background: var(--text-light);
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow);
-        margin-bottom: 1.5rem;
-        border-left: 4px solid var(--primary);
-        transition: all 0.2s ease;
-    }
-
-    .chart-container:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .chart-container img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 4px;
-    }
-
-    .chart-placeholder {
-        text-align: center;
-        color: var(--text-muted);
-        padding: 1.5rem;
-        font-size: 0.9rem;
-        font-style: italic;
-        background: var(--bg-light);
-        border-radius: 4px;
-    }
-
-    .action-btn {
-        font-size: 0.9rem;
-        padding: 0.5rem 1.2rem;
-        border-radius: 6px;
-        transition: all 0.2s ease;
-    }
-
-    .action-btn i {
-        margin-right: 0.3rem;
-    }
-
-    .action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow);
-    }
-
-    @media (max-width: 768px) {
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
         .dashboard-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .dashboard-header .btn-group {
-            margin-top: 0.75rem;
-        }
-
-        .widget p {
-            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .section-title {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
         }
 
-        .chart-container {
-            padding: 1rem;
+        .widget {
+            background: var(--text-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-    }
 
-    @media (max-width: 576px) {
+        .widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
         .widget i {
-            font-size: 1.8rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .widget h6 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
         .widget p {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .chart-container {
+            background: var(--text-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            font-style: italic;
+            background: var(--bg-light);
+            border-radius: 4px;
         }
 
         .action-btn {
-            width: 100%;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
-    }
-</style>
+
+        .action-btn i {
+            margin-right: 0.3rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dashboard-header .btn-group {
+                margin-top: 0.75rem;
+            }
+
+            .widget p {
+                font-size: 1.3rem;
+            }
+
+            .section-title {
+                font-size: 1.15rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .widget i {
+                font-size: 1.8rem;
+            }
+
+            .widget p {
+                font-size: 1.2rem;
+            }
+
+            .action-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-6">
-    <!-- Dashboard Header -->
-    <section class="dashboard-header">
-        <h1 class="text-2xl font-semibold text-gray-800">Dashboard Quản lý Thuốc</h1>
-        <div class="btn-group flex gap-2">
-            <a href="{{ url_for('dashboard') }}" class="action-btn bg-[var(--primary)] text-[var(--text-light)] hover:bg-[var(--secondary)]" aria-label="Làm mới trang">
-                <i class="fas fa-sync-alt"></i> Làm mới
-            </a>
-            <button class="action-btn bg-gray-200 text-[var(--text-dark)] opacity-50 cursor-not-allowed" disabled aria-label="Xuất báo cáo (chưa khả dụng)">
-                <i class="fas fa-download"></i> Xuất báo cáo
-            </button>
-        </div>
-    </section>
+    <div class="container mx-auto px-4 py-6">
+        <section class="mb-8">
+            <h2 class="section-title">Tổng quan</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="widget" role="region" aria-label="Tổng số bệnh nhân">
+                    <i class="fas fa-users"></i>
+                    <h6>Tổng số Bệnh nhân</h6>
+                    <p>{{ total_patients }}</p>
+                </div>
+                <div class="widget" role="region" aria-label="Thuốc trong kho">
+                    <i class="fas fa-capsules"></i>
+                    <h6>Thuốc trong kho</h6>
+                    <p>{{ total_medicines }}</p>
+                </div>
+                <div class="widget" role="region" aria-label="Đơn thuốc hôm nay">
+                    <i class="fas fa-file-prescription"></i>
+                    <h6>Đơn thuốc hôm nay</h6>
+                    <p>{{ today_prescriptions }}</p>
+                </div>
+            </div>
+        </section>
+        <section class="mb-8">
+            <h2 class="section-title">Hiệu suất đơn thuốc</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="chart-container" role="region" aria-label="Số đơn thuốc theo ngày">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Số đơn thuốc theo ngày</h5>
+                    {% if prescription_trend %}
+                        <img src="{{ prescription_trend }}" alt="Biểu đồ số đơn thuốc trong 7 ngày gần nhất"
+                             loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có dữ liệu</div>
+                    {% endif %}
+                </div>
+                <div class="chart-container" role="region" aria-label="Tỷ lệ đơn chưa hoàn thành">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Tỷ lệ đơn chưa hoàn thành</h5>
+                    {% if pending_ratio %}
+                        <img src="{{ pending_ratio }}" alt="Biểu đồ tỷ lệ đơn chưa hoàn thành" loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có dữ liệu</div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
 
-    <!-- Overview Section (Widgets) -->
-    <section class="mb-8">
-        <h2 class="section-title">Tổng quan</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="widget" role="region" aria-label="Tổng số bệnh nhân">
-                <i class="fas fa-users"></i>
-                <h6>Tổng số Bệnh nhân</h6>
-                <p>{{ total_patients }}</p>
+        <section>
+            <h2 class="section-title">Quản lý kho</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="chart-container" role="region" aria-label="Số thuốc tồn kho nhiều nhất<c">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Số thuốc tồn kho nhiều nhất</h5>
+                    {% if stock_levels %}
+                        <img src="{{ stock_levels }}" alt="Biểu đồ Số thuốc tồn kho nhiều nhất<" loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có dữ liệu</div>
+                    {% endif %}
+                </div>
+                <div class="chart-container" role="region" aria-label="Số thuốc được kê đơn nhiều nhất">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Số thuốc được kê đơn nhiều nhất</h5>
+                    {% if top_medicines_chart %}
+                        <img src="{{ top_medicines_chart }}" alt="Biểu đồ số thuốc được kê đơn nhiều nhất" loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có dữ liệu</div>
+                    {% endif %}
+                </div>
+                <div class="chart-container" role="region" aria-label="Phân bố trạng thái đơn thuốc">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Phân bố trạng thái đơn thuốc</h5>
+                    {% if status_distribution %}
+                        <img src="{{ status_distribution }}" alt="Biểu đồ phân bố trạng thái đơn thuốc" loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có dữ liệu</div>
+                    {% endif %}
+                </div>
+                <div class="chart-container" role="region" aria-label="Số lượng thuốc sắp hết hạn">
+                    <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Số lượng thuốc sắp hết hạn</h5>
+                    {% if expiring_medicines %}
+                        <img src="{{ expiring_medicines }}" alt="Biểu đồ số lượng thuốc sắp hết hạn" loading="lazy">
+                    {% else %}
+                        <div class="chart-placeholder">Không có thuốc sắp hết hạn</div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="widget" role="region" aria-label="Thuốc trong kho">
-                <i class="fas fa-capsules"></i>
-                <h6>Thuốc trong kho</h6>
-                <p>{{ total_medicines }}</p>
-            </div>
-            <div class="widget" role="region" aria-label="Đơn thuốc hôm nay">
-                <i class="fas fa-file-prescription"></i>
-                <h6>Đơn thuốc hôm nay</h6>
-                <p>{{ today_prescriptions }}</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Prescription Performance Section -->
-    <section class="mb-8">
-        <h2 class="section-title">Hiệu suất đơn thuốc</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="chart-container" role="region" aria-label="Số đơn thuốc theo ngày">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Số đơn thuốc theo ngày</h5>
-                {% if prescription_trend %}
-                    <img src="{{ prescription_trend }}" alt="Biểu đồ số đơn thuốc trong 7 ngày gần nhất" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có dữ liệu</div>
-                {% endif %}
-            </div>
-            <div class="chart-container" role="region" aria-label="Tỷ lệ đơn chưa hoàn thành">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Tỷ lệ đơn chưa hoàn thành</h5>
-                {% if pending_ratio %}
-                    <img src="{{ pending_ratio }}" alt="Biểu đồ tỷ lệ đơn chưa hoàn thành" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có dữ liệu</div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <!-- Inventory Management Section -->
-    <section>
-        <h2 class="section-title">Quản lý kho</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="chart-container" role="region" aria-label="Tồn kho top 5 thuốc">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Tồn kho top 5 thuốc</h5>
-                {% if stock_levels %}
-                    <img src="{{ stock_levels }}" alt="Biểu đồ tồn kho top 5 thuốc" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có dữ liệu</div>
-                {% endif %}
-            </div>
-            <div class="chart-container" role="region" aria-label="Top 5 thuốc được kê đơn">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Top 5 thuốc được kê đơn</h5>
-                {% if top_medicines_chart %}
-                    <img src="{{ top_medicines_chart }}" alt="Biểu đồ top 5 thuốc được kê đơn" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có dữ liệu</div>
-                {% endif %}
-            </div>
-            <div class="chart-container" role="region" aria-label="Phân bố trạng thái đơn thuốc">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Phân bố trạng thái đơn thuốc</h5>
-                {% if status_distribution %}
-                    <img src="{{ status_distribution }}" alt="Biểu đồ phân bố trạng thái đơn thuốc" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có dữ liệu</div>
-                {% endif %}
-            </div>
-            <div class="chart-container" role="region" aria-label="Top 5 thuốc sắp hết hạn">
-                <h5 class="text-center font-medium text-[var(--text-dark)] mb-3">Top 5 thuốc sắp hết hạn</h5>
-                {% if expiring_medicines %}
-                    <img src="{{ expiring_medicines }}" alt="Biểu đồ top 5 thuốc sắp hết hạn" loading="lazy">
-                {% else %}
-                    <div class="chart-placeholder">Không có thuốc sắp hết hạn</div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-</div>
+        </section>
+    </div>
 {% endblock %}

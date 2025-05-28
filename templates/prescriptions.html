@@ -72,92 +72,110 @@
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Bệnh nhân</th>
-                            <th>Bác sĩ</th>
-                            <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bệnh nhân</th>
+                        <th>Bác sĩ</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% if prescriptions %}
-                            {% for prescription in prescriptions %}
-                                <tr>
-                                    <td>{{ prescription.id }}</td>
-                                    <td>{{ prescription.patient.full_name if prescription.patient else 'N/A' }}</td>
-                                    <td>{{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</td>
-                                    <td>{{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                                    <td>
-                                        <span class="badge bg-warning">Chờ cấp phát</span>
-                                    </td>
-                                    <td>
-                                        {% if session.get('role') in ['pharmacist', 'admin'] %}
-                                            <button type="button" class="btn btn-success btn-sm btn-action" data-bs-toggle="modal"
-                                                    data-bs-target="#dispenseModal{{ prescription.id }}">
-                                                Cấp phát
-                                            </button>
-                                            <!-- Dispense Modal -->
-                                            <div class="modal fade" id="dispenseModal{{ prescription.id }}" tabindex=-1"
-                                                 aria-labelledby="dispenseModalLabel{{ prescription.id }}"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="dispenseModalLabel{{ prescription.id }}">Xác nhận cấp phát</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Bạn có chắc chắn muốn cấp phát đơn thuốc ID <strong>{{ prescription.id }}</strong>?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                            <form action="{{ url_for('dispense_prescription', prescription_id=prescription.id) }}" method="POST">
-                                                                <button type="submit" class="btn btn-success">Cấp phát</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button type="button" class="btn btn-danger btn-sm btn-action" data-bs-toggle="modal"
-                                                    data-bs-target="#undispenseModal{{ prescription.id }}">
-                                                Hủy cấp phát
-                                            </button>
-                                            <!-- Undispense Modal -->
-                                            <div class="modal fade" id="undispenseModal{{ prescription.id }}" tabindex="-1"
-                                                 aria-labelledby="undispenseModalLabel{{ prescription.id }}"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="undispenseModalLabel{{ prescription.id }}">Xác nhận hủy cấp phát</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Bạn có chắc chắn muốn hủy cấp phát đơn thuốc ID <strong>{{ prescription.id }}</strong>?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                            <form action="{{ url_for('undispense_prescription', prescription_id=prescription.id) }}" method="POST">
-                                                                <button type="submit" class="btn btn-danger">Hủy cấp phát</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                        <a href="{{ url_for('prescription_details', prescription_id=prescription.id) }}"
-                                           class="btn btn-info btn-sm btn-action">Xem chi tiết</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
+                    {% if prescriptions %}
+                        {% for prescription in prescriptions %}
                             <tr>
-                                <td colspan="6" class="text-center">Không có đơn thuốc chờ cấp phát</td>
+                                <td>{{ prescription.id }}</td>
+                                <td>{{ prescription.patient.full_name if prescription.patient else 'N/A' }}</td>
+                                <td>{{ prescription.doctor.full_name if prescription.doctor else 'N/A' }}</td>
+                                <td>{{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-warning">Chờ cấp phát</span>
+                                </td>
+                                <td>
+                                    {% if session.get('role') in ['pharmacist', 'admin'] %}
+                                        <button type="button" class="btn btn-success btn-sm btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#dispenseModal{{ prescription.id }}">
+                                            Cấp phát
+                                        </button>
+                                        <!-- Dispense Modal -->
+                                        <div class="modal fade" id="dispenseModal{{ prescription.id }}" tabindex=-1"
+                                             aria-labelledby="dispenseModalLabel{{ prescription.id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="dispenseModalLabel{{ prescription.id }}">Xác nhận cấp
+                                                            phát</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn muốn cấp phát đơn thuốc ID
+                                                        <strong>{{ prescription.id }}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Hủy
+                                                        </button>
+                                                        <form action="{{ url_for('dispense_prescription', prescription_id=prescription.id) }}"
+                                                              method="POST">
+                                                            <button type="submit" class="btn btn-success">Cấp phát
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger btn-sm btn-action"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#undispenseModal{{ prescription.id }}">
+                                            Hủy cấp phát
+                                        </button>
+                                        <!-- Undispense Modal -->
+                                        <div class="modal fade" id="undispenseModal{{ prescription.id }}" tabindex="-1"
+                                             aria-labelledby="undispenseModalLabel{{ prescription.id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="undispenseModalLabel{{ prescription.id }}">Xác nhận hủy
+                                                            cấp phát</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn muốn hủy cấp phát đơn thuốc ID
+                                                        <strong>{{ prescription.id }}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Hủy
+                                                        </button>
+                                                        <form action="{{ url_for('undispense_prescription', prescription_id=prescription.id) }}"
+                                                              method="POST">
+                                                            <button type="submit" class="btn btn-danger">Hủy cấp phát
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <a href="{{ url_for('prescription_details', prescription_id=prescription.id) }}"
+                                       class="btn btn-info btn-sm btn-action">Xem chi tiết</a>
+                                </td>
                             </tr>
-                        {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Không có đơn thuốc chờ cấp phát</td>
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>

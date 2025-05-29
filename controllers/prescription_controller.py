@@ -17,17 +17,14 @@ from pathlib import Path
 from io import BytesIO
 from unidecode import unidecode
 
-# Setup logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Định nghĩa giá trị hợp lệ cho change_type
 VALID_CHANGE_TYPES = {'import', 'dispense'}
 
 
 def register_prescription_routes(app):
-    # Load font Times New Roman từ hệ thống
-    font_path = Path("C:/Windows/Fonts/times.ttf")  # Times New Roman
+    font_path = Path("C:/Windows/Fonts/times.ttf")
     if not font_path.exists():
         logger.error(f"Font file not found at {font_path}")
         raise FileNotFoundError(f"Font file not found at {font_path}")
@@ -331,7 +328,6 @@ def register_prescription_routes(app):
     @role_required(['doctor', 'pharmacist', 'admin'])
     def export_prescription_pdf(prescription_id):
         try:
-            # Load prescription
             prescription = Prescription.query.options(
                 joinedload(Prescription.patient),
                 joinedload(Prescription.doctor),
@@ -343,22 +339,13 @@ def register_prescription_routes(app):
                 flash('Don thuoc da bi huy va khong the xuat PDF!', 'error')
                 return redirect(url_for('prescription_details', prescription_id=prescription_id))
 
-            # Log prescription items for debugging
-            logger.debug(f"Prescription ID {prescription_id} has {len(prescription.items)} items")
-            for item in prescription.items:
-                logger.debug(
-                    f"Item: medicine_id={item.medicine_id}, batch_id={item.batch_id}, quantity={item.quantity}")
-
-            # Create PDF buffer
             buffer = BytesIO()
             p = canvas.Canvas(buffer, pagesize=A4)
             width, height = A4
             margin = 20 * mm
             y_position = height - margin
 
-            # Set font
             p.setFont("TimesNewRoman", 18)
-            # Header
             p.drawCentredString(width / 2, y_position, unidecode(f"Don thuoc #{prescription.id}"))
             y_position -= 10 * mm
             p.setFont("TimesNewRoman", 12)
@@ -366,7 +353,6 @@ def register_prescription_routes(app):
                                 unidecode(f"Ngay xuat: {prescription.created_at.strftime('%d/%m/%Y')}"))
             y_position -= 10 * mm
 
-            # Patient Info
             p.setFont("TimesNewRoman", 14)
             p.drawString(margin, y_position, unidecode("Thong tin don thuoc"))
             y_position -= 7 * mm
@@ -385,7 +371,6 @@ def register_prescription_routes(app):
             p.drawString(margin, y_position, unidecode(f"Trang thai: {status}"))
             y_position -= 10 * mm
 
-            # Medicines Table
             p.setFont("TimesNewRoman", 14)
             p.drawString(margin, y_position, unidecode("Danh sach thuoc"))
             y_position -= 7 * mm
@@ -416,8 +401,7 @@ def register_prescription_routes(app):
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
             ]))
 
-            # Calculate table height
-            table_height = len(data) * 15 * mm  # Approximate height per row
+            table_height = len(data) * 15 * mm
             if y_position - table_height < margin:
                 p.showPage()
                 y_position = height - margin
@@ -425,22 +409,18 @@ def register_prescription_routes(app):
                 p.drawString(margin, y_position, unidecode("Danh sach thuoc (tiep theo)"))
                 y_position -= 7 * mm
 
-            # Draw table
             table.wrapOn(p, width - 2 * margin, height)
             table.drawOn(p, margin, y_position - table_height)
             y_position -= table_height + 10 * mm
 
-            # Footer
             p.setFont("TimesNewRoman", 10)
             p.drawCentredString(width / 2, margin, unidecode(
                 f"He thong Quan ly Thuoc - Xuat ngay {prescription.created_at.strftime('%d/%m/%Y')}"))
 
-            # Finalize PDF
             p.showPage()
             p.save()
             buffer.seek(0)
 
-            # Create response
             response = make_response(buffer.getvalue())
             response.headers['Content-Type'] = 'application/pdf'
             response.headers['Content-Disposition'] = f'attachment; filename=prescription_{prescription_id}.pdf'

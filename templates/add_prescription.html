@@ -156,15 +156,12 @@
                 console.log('Selected medicine:', $(select).find(':selected').text(), 'Stock:', stock, 'Unit:', unit);
             }
 
-            // Khởi tạo tồn kho cho mục đầu tiên
             updateStockInfo($('.medicine-select').first());
 
-            // Xử lý thay đổi thuốc
             $(document).on('change', '.medicine-select', function () {
                 updateStockInfo(this);
             });
 
-            // Thêm mục thuốc mới
             $('#addItemBtn').click(function () {
                 itemCount++;
                 const newItem = `
@@ -209,7 +206,6 @@
                 updateStockInfo($('#prescription-items .item-row:last .medicine-select'));
             });
 
-            // Kiểm tra số lượng trước khi submit
             $('#prescriptionForm').submit(function (e) {
                 let valid = true;
                 $('.item-row').each(function () {

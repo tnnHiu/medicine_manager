@@ -181,15 +181,12 @@
                 const unit = selectedOption.data('unit') || '';
                 $parent.find('.unit-input').val(unit);
             }
-
-            // Initialize unit for existing select elements
             $('.medicine-select').each(function() {
                 updateUnit($(this));
             }).on('change', function() {
                 updateUnit($(this));
             });
 
-            // Add medicine item
             $('.add-medicine-btn').on('click', function() {
                 const newItem = $(`
                     <div class="medicine-item">
@@ -226,19 +223,14 @@
                     </div>
                 `);
                 $('#medicine-items').append(newItem);
-
-                // Initialize unit for new select element
                 newItem.find('.medicine-select').on('change', function() {
                     updateUnit($(this));
                 });
 
-                // Handle remove button for new item
                 newItem.find('.remove-medicine-btn').on('click', function() {
                     newItem.remove();
                 });
             });
-
-            // Remove medicine item
             $(document).on('click', '.remove-medicine-btn', function() {
                 $(this).closest('.medicine-item').remove();
             });

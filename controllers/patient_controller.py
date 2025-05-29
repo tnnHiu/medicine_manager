@@ -5,14 +5,12 @@ from models.patient import GenderEnum
 from extensions import db
 from datetime import datetime
 
-
 def register_patient_routes(app):
     @app.route('/patients', methods=['GET'], endpoint='patients')
     @login_required
     @role_required(['admin', 'doctor', 'pharmacist'])
     def patients():
         patients_list = Patient.query.all()
-        # Tải trước đơn thuốc để tránh N+1 query
         for patient in patients_list:
             patient.prescriptions = Prescription.query.filter(
                 Prescription.patient_id == patient.id,

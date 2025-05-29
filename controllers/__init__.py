@@ -7,7 +7,6 @@ from controllers.medicine_batches_controller import register_medicine_batch_rout
 from controllers.prescription_controller import register_prescription_routes
 from controllers.dashboard_controller import register_dashboard_routes
 
-
 def register_all_routes(app):
     register_auth_routes(app)
     register_patient_routes(app)

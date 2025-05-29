@@ -16,3 +16,4 @@ class PrescriptionItem(db.Model):
 
     medicine = db.relationship('Medicine')
     batch = db.relationship('MedicineBatch')
+

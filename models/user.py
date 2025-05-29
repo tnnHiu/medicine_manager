@@ -1,7 +1,6 @@
 from extensions import db
 import enum
 
-
 # Người dùng
 class RoleEnum(enum.Enum):
     admin = "admin"

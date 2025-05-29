@@ -4,12 +4,10 @@ from functools import wraps
 from urllib.parse import urlparse, urljoin
 from models.user import User
 
-
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
 
 def login_required(f):
     @wraps(f)
@@ -21,7 +19,6 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
-
 
 def role_required(roles):
     def decorator(f):

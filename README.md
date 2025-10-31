@@ -1,3 +1,47 @@
+# 💊 Medicine Manager
+
+## 🛠️ Framework và Công nghệ
+
+Dự án này sử dụng **Flask** - một micro web framework của Python.
+
+### Các thành phần chính:
+- **Flask**: Web framework chính để xây dựng ứng dụng web
+- **Jinja2**: Template engine (đi kèm với Flask) để render các trang HTML động
+- **Flask-SQLAlchemy**: ORM (Object-Relational Mapping) để tương tác với cơ sở dữ liệu
+- **Flask-Migrate**: Quản lý database migrations
+- **MySQL/PyMySQL**: Hệ quản trị cơ sở dữ liệu
+- **Werkzeug**: Thư viện WSGI utility (đi kèm với Flask) để xử lý mã hóa mật khẩu và bảo mật
+- **Matplotlib**: Thư viện tạo biểu đồ và trực quan hóa dữ liệu
+
+### Cấu trúc dự án:
+```
+medicine_manager/
+├── app.py                  # Entry point của ứng dụng
+├── config.py              # Cấu hình database và Flask
+├── extensions.py          # Khởi tạo Flask extensions (SQLAlchemy)
+├── models/                # Database models (ORM)
+│   ├── medicine.py
+│   ├── patient.py
+│   ├── prescription.py
+│   └── ...
+├── controllers/           # Route handlers (Controllers/Views)
+│   ├── auth_controller.py
+│   ├── medicine_controller.py
+│   ├── dashboard_controller.py
+│   └── ...
+└── templates/            # Jinja2 HTML templates
+    ├── base.html
+    ├── dashboard.html
+    ├── medicines.html
+    └── ...
+```
+
+### Pattern sử dụng:
+- **MVC Pattern**: Model (models/), Controller (controllers/), View (templates/)
+- **Blueprint-style routing**: Mỗi controller đăng ký routes riêng biệt
+- **Session-based Authentication**: Sử dụng Flask session để quản lý đăng nhập
+- **Decorators**: `@login_required`, `@role_required` để bảo vệ routes
+
 ## 🔗 Bảng Quan Hệ Giữa Các Bảng
 
 | Bảng chính         | Bảng liên quan         | Kiểu quan hệ        | Khóa chính             | Khóa ngoại                          | Mô tả                                                         |
